@@ -1,0 +1,26 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "I pledge my honor that I have abided by the Stevens Honor System.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zschuh/chess.git"
+  },
+  "author": "Marco Arriaga, Zachary Schuh, Nick Christen-Adams, Xavier Aviles",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zschuh/chess/issues"
+  },
+  "homepage": "https://github.com/zschuh/chess#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.17.3",
+    "express-session": "^1.17.2",
+    "mongodb": "^4.5.0"
+  }
+}
