@@ -1,8 +1,11 @@
 // const rootRoutes = require("./root");
+const path = require('path');
+
 const constructorMethod = (app) => {
 
-    // app.use('/', rootRoutes);
-
+    app.get('/', (req, res) => {
+        res.sendFile(path.resolve("static/default.html"));
+    });
     app.use('*', (req, res) => {
         res.sendStatus(404);
     });

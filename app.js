@@ -12,6 +12,8 @@ const cookieParser = require('cookie-parser');
 app.use(cookieParser());
 
 app.use(express.json());
+// this lets the server return anything in the static folder without a route
+app.use('/static', express.static(__dirname + '/static'));
 // necessary to get the forms to work as expected
 app.use(express.urlencoded({extended: true}));
 
