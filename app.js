@@ -4,10 +4,10 @@ const session = require('express-session');
 const configRoutes = require('./routes');
 const cookieParser = require('cookie-parser');
 
-// handlebars stuff that we may not use
-// const exphbs = require('express-handlebars');
-// app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
-// app.set('view engine', 'handlebars');
+// handlebars stuff
+const exphbs = require('express-handlebars');
+app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
 app.use(cookieParser());
 
