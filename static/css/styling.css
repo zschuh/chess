@@ -15,5 +15,14 @@ body {
     padding: 15px;
 }
 
+.nav-link:visited, .nav-link:link, .nav-link:hover, .nav-link:active {
+    color: black;
+}
+
+.nav-tabs {
+    border-width: 6px;
+    border-color: #eea39a;
+    color: #eea39a;
+}
 
 
