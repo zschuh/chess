@@ -1,0 +1,19 @@
+body {
+    background-image: url(../images/chess_bckgrnd_smth.png);
+}
+
+.width-setter {
+    margin: auto;
+    width: 70%;
+}
+
+.div-center {
+    padding: 15px;
+}
+
+.button-nav {
+    padding: 15px;
+}
+
+
+
