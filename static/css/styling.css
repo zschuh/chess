@@ -7,7 +7,7 @@ body {
     width: 70%;
 }
 
-.div-center {
+.div-padding {
     padding: 15px;
 }
 
@@ -15,5 +15,25 @@ body {
     padding: 15px;
 }
 
+.nav-link:visited, .nav-link:link, .nav-link:hover, .nav-link:active {
+    color: black;
+}
 
+.nav-tabs {
+    border-right-style: double;
+    border-left-style: double;
+    border-bottom-style: double;
+    border-width: 6px;
+    border-color: #eea39a;
+    color: #eea39a;
+}
+
+.form-btn {
+    margin-top: 10px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
 

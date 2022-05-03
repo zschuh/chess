@@ -1,11 +1,10 @@
 // const rootRoutes = require("./root");
 const path = require('path');
+const routes = require('./routes');
 
 const constructorMethod = (app) => {
+    app.use('/', routes);
 
-    app.get('/', (req, res) => {
-        res.render('general/frontpage');
-    });
     app.use('*', (req, res) => {
         res.sendStatus(404);
     });
