@@ -1,5 +1,6 @@
 body {
     background-image: url(../images/chess_bckgrnd_smth.png);
+    background-size: cover;
 }
 
 .width-setter {
