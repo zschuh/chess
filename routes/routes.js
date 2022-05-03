@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/user', async (req, res) => {
-    res.render('general/user');
+    res.render('general/user', {jsfile: 'static/js/userform.js'});
 });
 
 // plan on having this route be called by ajax call

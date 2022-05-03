@@ -7,7 +7,7 @@ body {
     width: 70%;
 }
 
-.div-center {
+.div-padding {
     padding: 15px;
 }
 
@@ -20,9 +20,20 @@ body {
 }
 
 .nav-tabs {
+    border-right-style: double;
+    border-left-style: double;
+    border-bottom-style: double;
     border-width: 6px;
     border-color: #eea39a;
     color: #eea39a;
 }
 
+.form-btn {
+    margin-top: 10px;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
 
