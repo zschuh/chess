@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/user', async (req, res) => {
-    res.render('general/user', {jsfile: 'static/js/userform.js'});
+    res.render('general/user', { jsfiles: ['static/js/userform.js', '/socket.io/socket.io.js'] });
 });
 
 // plan on having this route be called by ajax call
@@ -18,7 +18,7 @@ router.post('/user', async (req, res) => {
 });
 
 router.get('/game', async (req, res) => {
-    res.render('general/game');
+    res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js'] });
 });
 
 router.get('/leaderboard', async (req, res) => {

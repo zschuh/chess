@@ -38,3 +38,41 @@ body {
     font-weight: bold;
 }
 
+#menu > div {
+    text-align: center;
+}
+
+.connected span,
+.ready span {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    background: red;
+}
+
+span.green {
+    background: green;
+}
+
+#chat {
+    width: 20%;
+    border: 2px solid black;
+    background-color: white;
+}
+
+#chat-box {
+    overflow-y: scroll;
+    height: 400px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#chat-input {
+    width: 35%;
+    font-size: small;
+}
+
+#chat-button {
+    width: 25%;
+    font-size: small;
+}

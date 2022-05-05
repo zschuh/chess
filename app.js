@@ -3,6 +3,7 @@ const app = express();
 const session = require('express-session');
 const configRoutes = require('./routes');
 const cookieParser = require('cookie-parser');
+const socketio = require('socket.io');
 
 // handlebars stuff
 const exphbs = require('express-handlebars');
@@ -46,7 +47,80 @@ app.use(async (req, res, next) => {
 
 configRoutes(app);
 
-app.listen(3000, () => {
+var server = app.listen(3000, () => {
   console.log("We've now got a server!");
   console.log('Your routes will be running on http://localhost:3000');
 });
+
+// socket.io work here for communicating between server/clients
+const io = socketio(server);
+
+// create an arr[2] to hold connections for chess game - length of 2 because first 2 people to 
+// search will be matched together, anyone joining after will not be let in
+// we do it this way for the sake of convenience for our project
+const connections = [null, null];
+
+io.on('connection', socket => {
+
+  // fill up connections, give players indexes for identification
+  let playerIndex = -1;
+  for (const i in connections) {
+    if (connections[i] === null) {
+      playerIndex = i;
+      break;
+    }
+  }
+
+  // tell the connecting client what player number they are
+  socket.emit('player-number', playerIndex);
+
+  console.log(`Player ${playerIndex} has connected`);
+
+  // ignore 3rd and beyond players connecting
+  if (playerIndex === -1) return;
+
+  // set connections to false when player is in the game but not ready, true when they select true
+  connections[playerIndex] = false;
+
+  // tell everyone who connected
+  socket.broadcast.emit('player-connection', playerIndex);
+
+  // disconnect
+  socket.on('disconnect', () => {
+    console.log(`Player ${playerIndex} disconnected`);
+    connections[playerIndex] = null;
+    // tell everyone who disconnected
+    socket.broadcast.emit('player-connection', playerIndex);
+  })
+
+  // on ready up
+  socket.on('player-ready', () => {
+    // tell other client that their opponent readied up
+    socket.broadcast.emit('opponent-ready', playerIndex);
+    connections[playerIndex] = true;
+  })
+
+  // check player connections
+  socket.on('check-players', () => { 
+    const players = [];
+    for (const i in connections) {
+      connections[i] === null ? players.push({ connected: false, ready: false }) : players.push({ connected: true, ready: connections[i] });
+    }
+    socket.emit('check-players', players);
+  })
+
+  // chat received 
+  socket.on('chat', msg => {
+    console.log(`Message sent from ${playerIndex}: `, msg);
+
+    // send message to the other player 
+    socket.broadcast.emit('chat', [playerIndex, msg]);
+  })
+
+  setTimeout(() => {
+    connections[playerIndex] = null;
+    socket.emit('timeout');
+    socket.disconnect();
+
+  }, 600000) // 10 minutes then timeout
+})
