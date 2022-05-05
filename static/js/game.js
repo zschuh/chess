@@ -5,7 +5,8 @@
     let playerNum = 0;
     let orientation = 'white';
     let boardCreated = false;
-    let turn = false;
+    let turn = true; // This is true if it's the current player's turn
+    let socket = null;
 
     /*
     TODO:
@@ -57,12 +58,15 @@
     //moving blacks pieces at all and vice versa
     function onDragStart (source, piece, position, orientation) {
         // do not pick up pieces if the game is over
+        console.log("onDragStart");
         if (game.game_over()) return false;
     
         /*if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
             return false;
         }*/
+
+        if(!turn) return false;
 
         //only pick up pieces for your side
         //playerNum 0 = white
@@ -78,6 +82,7 @@
     //this function will be edited a bit when
     //dbstuff finishes
     function onDrop (source, target, piece, newPos) {
+        console.log("onDrop");
         removeGreySquares();
         console.log('Source: ' + source);
         console.log('Target: ' + target);
@@ -91,8 +96,9 @@
         // illegal move
         if (move === null) return 'snapback';
         //legal, push to db these 2 lines are temporary until db stuff is done
-        curPos++;
-        gamestate.push(Chessboard.objToFen(newPos));
+        // DB testing stuff
+        // curPos++;
+        // gamestate.push(Chessboard.objToFen(newPos));
         //after this will have to pull most recent move from black from db
         //then make the move on the board
     }
@@ -100,6 +106,7 @@
     //next 2 functions are just for highlighting the legal moves
     function onMouseoverSquare (square, piece) {
         // get list of possible moves for this square
+        console.log("onMouseoverSquare");
         var moves = game.moves({
           square: square,
           verbose: true
@@ -122,7 +129,12 @@
     }
 
     function onSnapEnd () {
+        console.log("onSnapEnd");
         board.position(game.fen())
+        // also send this game.fen() to the other client
+        socket.emit('send-move', game.fen());
+        turn = !turn;
+        console.log("sent move");
     }
     function updateStatus () {
         var status = ''
@@ -198,7 +210,8 @@
             onMouseoverSquare: onMouseoverSquare,
             onSnapEnd: onSnapEnd
         };
-        var board = Chessboard('board', config);
+        // set the board variable 
+        board = Chessboard('board', config);
 
         updateStatus();
     }
@@ -210,7 +223,7 @@
     });
 
     function startMultiplayer() {
-        const socket = io();
+        socket = io(); // it's complaining that io isn't defined unless it's here...
 
         // receive client's player number
         socket.on('player-number', num => {
@@ -223,6 +236,7 @@
                 if (playerNum === 1) {
                     currentPlayer = "opponent";
                     orientation = 'black'
+                    turn = false; // not their turn
                     socket.emit('both-connected'); // trigger the board to show for the other player
                     initBoard();
                 }
@@ -232,6 +246,12 @@
                 // get other player status
                 socket.emit('check-players');
             }
+        })
+
+        socket.on('receive-move', fenc => {
+            console.log("recevied move");
+            board.position(fenc);
+            
         })
 
         socket.on('show-chessboard', () => {

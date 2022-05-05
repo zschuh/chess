@@ -105,6 +105,12 @@ io.on('connection', socket => {
     socket.broadcast.emit('show-chessboard');
   })
 
+  socket.on('send-move', fenc => {
+    // TODO: add the fencode to the database
+    console.log("received move, forwarded");
+    socket.broadcast.emit('receive-move', fenc);
+  })
+
   // check player connections
   socket.on('check-players', () => { 
     const players = [];
