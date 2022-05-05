@@ -80,7 +80,8 @@ io.on('connection', socket => {
   if (playerIndex === -1) return;
 
   // set connections to false when player is in the game but not ready, true when they select true
-  connections[playerIndex] = false;
+  // Marco: Defaulting this to true right now so I don't have to deal with a ready button
+  connections[playerIndex] = true;
 
   // tell everyone who connected
   socket.broadcast.emit('player-connection', playerIndex);

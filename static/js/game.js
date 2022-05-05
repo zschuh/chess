@@ -153,7 +153,8 @@
           }
         }
       
-        $status.html(status)
+        // $status.html(status)
+        console.log(status); // I don't have an html element for the status
       }
 
     /*Going to need a function to get the most recent move
@@ -198,7 +199,7 @@
             else {
                 $('#game').show().siblings('section').hide();
                 playerNum = parseInt(num);
-                if (playerNum === 1) { 
+                if (playerNum === 1) {
                     currentPlayer = "opponent";
                     orientation = 'black';
                 }
@@ -212,22 +213,28 @@
 
         // another player connects
         socket.on('player-connection', num => {
-            console.log(`Player number ${num} has connected or disconneted`);
+            console.log(`Player number ${num} has connected or disconnected`);
             playerConnectedOrDisconnected(num);
         })
 
+        // TODO: Implement a ready up system for the game if I want to, I can also just have it start immediately once both players have connected
         // on opponent ready
-        /* this part is not neccessary at this point in time - create game first
-        socket.on('opponent-ready', num => {
-            opponentReady = true;
-            playerReady(num);
-            if (ready) then playgame
-        }) */
+        // this part is not neccessary at this point in time - create game first
+        // socket.on('opponent-ready', num => {
+        //     opponentReady = true;
+        //     playerReady(num);
+        //     if (ready) playgame
+        // })
 
-        // check player status 
+        // check player status
+        // Marco - afaik this is only done on connection
         socket.on('check-players', players => {
+            let allReady = true;
             players.forEach((p, i) => {
-                if (p.connected) { playerConnectedOrDisconnected(i) }
+                if (p.connected) { 
+                    playerConnectedOrDisconnected(i) 
+                }
+                allReady &= p.connected;
                 /* Do something like this once the game is implemented
                 if (p.ready) {
                     playerReady(i);
@@ -235,6 +242,23 @@
                 }
                 */
             })
+            if(allReady){
+                // show the chessboard; should probably put this in another function
+                console.log("all ready");
+                var config = {
+                    draggable: true,
+                    position: 'start',
+                    orientation: orientation,
+                    onDragStart: onDragStart,
+                    onDrop: onDrop,
+                    onMouseoutSquare: onMouseoutSquare,
+                    onMouseoverSquare: onMouseoverSquare,
+                    onSnapEnd: onSnapEnd
+                };
+                var board = Chessboard('board', config);
+
+                updateStatus();
+            }
         })
 
         // on timeout
