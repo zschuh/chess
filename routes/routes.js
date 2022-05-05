@@ -18,7 +18,7 @@ router.post('/user', async (req, res) => {
 });
 
 router.get('/game', async (req, res) => {
-    res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.min.js'] });
+    res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.js'] });
 });
 
 router.get('/leaderboard', async (req, res) => {

@@ -4,9 +4,8 @@
     let currentPlayer = 'user';
     let playerNum = 0;
     let orientation = 'white';
-    //let ready = false;
-    //let opponentReady = false;
-    //let isGameOver = false;
+    let boardCreated = false;
+    let turn = false;
 
     /*
     TODO:
@@ -182,6 +181,28 @@
     updateStatus(); */
     /***********************************************************/
 
+    function initBoard(){
+        // show the chessboard; should probably put this in another function
+        console.log("Creating the board...");
+        if(boardCreated){
+            console.log("Board already created. Stopping.");
+            return;
+        }
+        var config = {
+            draggable: true,
+            position: 'start',
+            orientation: orientation,
+            onDragStart: onDragStart,
+            onDrop: onDrop,
+            onMouseoutSquare: onMouseoutSquare,
+            onMouseoverSquare: onMouseoverSquare,
+            onSnapEnd: onSnapEnd
+        };
+        var board = Chessboard('board', config);
+
+        updateStatus();
+    }
+
     $('#start-button').on('click', function (event) {
         event.preventDefault();
 
@@ -201,7 +222,9 @@
                 playerNum = parseInt(num);
                 if (playerNum === 1) {
                     currentPlayer = "opponent";
-                    orientation = 'black';
+                    orientation = 'black'
+                    socket.emit('both-connected'); // trigger the board to show for the other player
+                    initBoard();
                 }
 
                 console.log(playerNum);
@@ -209,6 +232,11 @@
                 // get other player status
                 socket.emit('check-players');
             }
+        })
+
+        socket.on('show-chessboard', () => {
+            initBoard();
+            // then like start the game logic or something
         })
 
         // another player connects
@@ -242,23 +270,10 @@
                 }
                 */
             })
-            if(allReady){
-                // show the chessboard; should probably put this in another function
-                console.log("all ready");
-                var config = {
-                    draggable: true,
-                    position: 'start',
-                    orientation: orientation,
-                    onDragStart: onDragStart,
-                    onDrop: onDrop,
-                    onMouseoutSquare: onMouseoutSquare,
-                    onMouseoverSquare: onMouseoverSquare,
-                    onSnapEnd: onSnapEnd
-                };
-                var board = Chessboard('board', config);
-
-                updateStatus();
-            }
+            // This doesn't work, this only works to display the player that joined second
+            // if(allReady){
+            //     initBoard();
+            // }
         })
 
         // on timeout

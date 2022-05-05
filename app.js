@@ -101,6 +101,10 @@ io.on('connection', socket => {
     connections[playerIndex] = true;
   })
 
+  socket.on('both-connected', () => {
+    socket.broadcast.emit('show-chessboard');
+  })
+
   // check player connections
   socket.on('check-players', () => { 
     const players = [];
