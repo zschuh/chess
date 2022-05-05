@@ -22,6 +22,7 @@ router.get('/game', async (req, res) => {
 });
 
 router.get('/leaderboard', async (req, res) => {
+    // TODO: This needs to pull from the database function the leaderboard. - Marco
     res.render('general/leaderboard');
 });
 
