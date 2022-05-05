@@ -66,16 +66,20 @@
             return false;
         }*/
 
-        if(!turn) return false;
+        if(!turn){
+            console.log("not your turn...");
+            return false;
+        } 
 
         //only pick up pieces for your side
         //playerNum 0 = white
         //playerNum 1 = black
-        if(playerNum == 0){
-            if(piece.search(/^b/) !== -1) return false;
-        } else if (playerNum == 1) {
-            if(piece.search(/^w/) !== -1) return false;
-        }
+        // TODO: UNCOMMENT THIS LATER THIS IS IMPORTANT
+        // if(playerNum == 0){
+        //     if(piece.search(/^b/) !== -1) return false;
+        // } else if (playerNum == 1) {
+        //     if(piece.search(/^w/) !== -1) return false;
+        // }
     }
 
     //validate the move, if it's legal push it to the database
@@ -101,12 +105,15 @@
         // gamestate.push(Chessboard.objToFen(newPos));
         //after this will have to pull most recent move from black from db
         //then make the move on the board
+
+        socket.emit('send-move', {from: source, to: target, promotion: 'q'});
+        console.log('sent move to server');
     }
 
     //next 2 functions are just for highlighting the legal moves
     function onMouseoverSquare (square, piece) {
         // get list of possible moves for this square
-        console.log("onMouseoverSquare");
+        console.log(`onMouseoverSquare, turn: ${game.turn()}`);
         var moves = game.moves({
           square: square,
           verbose: true
@@ -130,11 +137,10 @@
 
     function onSnapEnd () {
         console.log("onSnapEnd");
-        board.position(game.fen())
+        board.position(game.fen());
         // also send this game.fen() to the other client
-        socket.emit('send-move', game.fen());
-        turn = !turn;
-        console.log("sent move");
+        turn = !turn; // flip your turn
+        // console.log("sent move");
     }
     function updateStatus () {
         var status = ''
@@ -250,8 +256,9 @@
 
         socket.on('receive-move', fenc => {
             console.log("recevied move");
-            board.position(fenc);
-            
+            game.move(fenc);
+            board.position(game.fen());
+            turn = !turn;
         })
 
         socket.on('show-chessboard', () => {
