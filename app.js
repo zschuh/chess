@@ -61,9 +61,9 @@ const io = socketio(server);
 // search will be matched together, anyone joining after will not be let in
 // we do it this way for the sake of convenience for our project
 const connections = [null, null];
+const playerNames = [null, null];
 
 io.on('connection', socket => {
-
   // fill up connections, give players indexes for identification
   let playerIndex = -1;
   for (const i in connections) {
@@ -85,6 +85,7 @@ io.on('connection', socket => {
   // Marco: Defaulting this to true right now so I don't have to deal with a ready button
   connections[playerIndex] = true;
 
+
   // tell everyone who connected
   socket.broadcast.emit('player-connection', playerIndex);
 
@@ -98,6 +99,8 @@ io.on('connection', socket => {
     }
     console.log(`Player ${playerIndex} disconnected`);
     connections[playerIndex] = null;
+    // reset the username
+    playerNames[playerIndex] = null;
     // tell everyone who disconnected
     socket.broadcast.emit('player-connection', playerIndex);
   })
@@ -107,6 +110,31 @@ io.on('connection', socket => {
     // tell other client that their opponent readied up
     socket.broadcast.emit('opponent-ready', playerIndex);
     connections[playerIndex] = true;
+  })
+
+  socket.on('username-and-playernum', passedobj => {
+    // TODO: have this fully reset the game and stuff too
+    // check the other player
+    console.log('new user:');
+    console.log(passedobj);
+    if(passedobj.playerNum === 1){
+      if(playerNames[0] === passedobj.username){
+        // have it fail and disconnect them
+        console.log('same player logged in twice');
+        socket.broadcast.emit('kill-game-2user');
+      } else {
+        playerNames[1] = passedobj.username.toLowerCase();
+      }
+    } else {
+      if(playerNames[1] === passedobj.username){
+        console.log('same player logged in twice');
+        socket.broadcast.emit('kill-game-2user');
+      } else {
+        playerNames[0] = passedobj.username.toLowerCase();
+      }
+    }
+
+
   })
 
   socket.on('both-connected', () => {

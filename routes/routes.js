@@ -133,7 +133,10 @@ const TESTING_OVERRIDE = true;
 router.get('/game', async (req, res) => {
     if (req.session.username || TESTING_OVERRIDE) {
         res.render('general/game', {    jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.js'],
-                                        loggedIn: true });
+                                        loggedIn: true,
+                                        passedVars: [
+                                            {varName: 'userId', varValue: req.session.username }
+                                        ]});
     }
     else {
         // person is trying to access the game but they're not logged in
