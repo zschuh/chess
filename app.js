@@ -138,8 +138,9 @@ io.on('connection', socket => {
   })
 
   socket.on('both-connected', () => {
-    socket.broadcast.emit('show-chessboard');
+    socket.broadcast.emit('show-chessboard', playerNames);
     activeGame = true;
+    console.log(`beginning a game between ${playerNames[0]} and ${playerNames[1]}`)
   })
 
   socket.on('send-move', fenc => {
@@ -172,10 +173,11 @@ io.on('connection', socket => {
 
   // chat received 
   socket.on('chat', msg => {
-    console.log(`Message sent from ${playerIndex}: `, msg);
+    console.log(`Message sent from ${playerIndex} ${msg[1]}: `, msg[0]);
 
     // send message to the other player 
-    socket.broadcast.emit('chat', [playerIndex, msg]);
+    // this is very scuffed because I'm doing all of this in a hacky way lol
+    socket.broadcast.emit('chat', [msg[1], msg[0]]);
   })
 
   setTimeout(() => {

@@ -129,7 +129,7 @@ router.post('/user', async (req, res) => {
 });
 
 // Set this to TRUE to ignore the login check the game page.
-const TESTING_OVERRIDE = true;
+const TESTING_OVERRIDE = false;
 router.get('/game', async (req, res) => {
     if (req.session.username || TESTING_OVERRIDE) {
         res.render('general/game', {    jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.js'],

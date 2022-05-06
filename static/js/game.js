@@ -8,6 +8,7 @@
     let boardCreated = false;
     let turn = true; // This is true if it's the current player's turn
     let socket = null;
+    let playerNames = ['(unconnected)', '(unconnected)'];
 
     /*
     TODO:
@@ -278,6 +279,8 @@ These should all be done now
                     initBoard();
                 }
 
+                playerNames[playerNum] = username;
+
                 console.log(playerNum);
 
                 // get other player status
@@ -293,9 +296,10 @@ These should all be done now
             checkStatus(); // check the game state and log important stuff
         })
 
-        socket.on('show-chessboard', () => {
+        socket.on('show-chessboard', playerN => {
             initBoard();
-            // then like start the game logic or something
+            console.log(playerN);
+            playerNames = playerN;
         })
 
         // another player connects
@@ -354,8 +358,9 @@ These should all be done now
     
             if (chatMessage) {
                 // find way to empty input field if possible. .val() = '' not working
-                socket.emit('chat', chatMessage);
-                $('#chat-box').append(`Player ${parseInt(playerNum) + 1}: ${chatMessage}<br/>`);
+                socket.emit('chat', [chatMessage, username]);
+                // $('#chat-box').append(`Player ${parseInt(playerNum) + 1}: ${chatMessage}<br/>`);
+                $('#chat-box').append(`${playerNames[playerNum]}: ${chatMessage}<br/>`);
             }
             else {
                 return;
@@ -365,7 +370,7 @@ These should all be done now
         // on receiving chat
         socket.on('chat', info => {
             // TODO: change this to be the player name
-            $('#chat-box').append(`Player ${parseInt(info[0]) + 1}: ${info[1]}<br/>`);
+            $('#chat-box').append(`${info[0]}: ${info[1]}<br/>`);
         })
 
         socket.on('kill-game', () => {
