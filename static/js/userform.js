@@ -21,6 +21,53 @@
         if (password.length < 6) { throw 'Password must be at least 6 characters long' }
     }
 
+    function displayUserData() {
+        // ajax call to get user data from database
+        let requestConfig = {
+            method: 'GET',
+            url: '/userdata',
+        };
+
+        $.ajax(requestConfig).then(function (responseMessage) {
+            if (responseMessage.userData) {
+                loginSignupDiv.hide();
+
+                let userInfo = responseMessage.userData; // for easier reference in the jquery appends to follow
+                userInfoTitle.html(`${userInfo.username}'s Info!`);
+                userInfoList.append(`<li>Email: ${userInfo.email}</li>`);
+                userInfoList.append(`<li>Username: ${userInfo.username}</li>`);
+                userInfoList.append(`<li>Rating: ${userInfo.rating}</li>`);
+                userInfoList.append(`<li>Games Played: ${userInfo.gamesPlayed.length}</li>`);
+
+                // if the navbar only has 5 tabs, add the logout tab. this is only necessary immediately after logging in,
+                // as afterwards the session will recognize that you are logged in and add the tab to the handlebar itself
+                if (loggedIn === 0) {
+                    $('#navbar').append(`<li id="logout-li" class="nav-item">
+                                            <a class="nav-link" href="/logout">Log Out</a>
+                                        </li>`);
+                }
+
+                userInfoDiv.show();
+            }
+        })
+    }
+
+    // this variable is used to determine whether you're logged in already upon ariving at the user page
+    // if 0, it will be used to add a logout tab to the top of the screen upon login/signup.
+    // if 1, it should already have the tab at the top of the screen, so a new tab won't be added.
+    var loggedIn = 0;
+
+    // if user is logged in (via req.session in routes), check the hidden div #user-div in handlebar for username,
+    // then display user data
+    if ($('#logout-li').length > 0) {
+        loggedIn = 1;
+        displayUserData();
+    }
+
+    var userInfoDiv = $('#user-info');
+    var userInfoTitle = $('#user-info-title');
+    var loginSignupDiv = $('#login-signup-div');
+    var userInfoList = $('#user-info-list');
     var signupForm = $('#signupForm');
     var signupFormError = $('#signupFormError');
     var loginForm = $('#loginForm');
@@ -31,6 +78,7 @@
     var loginUser = $('#login_username');
     var loginPass = $('#login_pass');
 
+    // This hits on signup submission
     signupForm.submit(function (event) {
         event.preventDefault();
 
@@ -54,9 +102,31 @@
             signupFormError.hide();
 
             // do ajax post call to database functions
+            let requestConfig = {
+                method: 'POST',
+                url: '/user',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    email: signup_email,
+                    username: signup_user,
+                    password: signup_pass
+                })
+            };
+
+            $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success) {
+                    // if signup was a success then hide login/signup forms and display user data
+                    displayUserData();
+                }
+                else if (responseMessage.error) {
+                    signupFormError.html(responseMessage.error);
+                    signupFormError.show();
+                }
+            });
         }
     })
 
+    // This hits on login submission
     loginForm.submit(function (event) {
         event.preventDefault();
 
@@ -78,7 +148,26 @@
             loginFormError.hide();
 
             // do ajax post call to database functions
+            let requestConfig = {
+                method: 'POST',
+                url: '/user',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    username: login_user,
+                    password: login_pass
+                })
+            };
+
+            $.ajax(requestConfig).then(function (responseMessage) {
+                if (responseMessage.success) {
+                    // if login was a success then hide login/signup forms and display user data
+                    displayUserData();
+                }
+                else if (responseMessage.error) {
+                    loginFormError.html(responseMessage.error);
+                    loginFormError.show();
+                }
+            });
         }
     })
-
 })(window.jQuery);

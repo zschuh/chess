@@ -18,5 +18,6 @@ const getCollectionFn = (collection) => {
 /* Now, you can list your collections here: */
 module.exports = {
   // TODO: create all of the collections that we are planning on using
-  users: getCollectionFn('users')
+  users: getCollectionFn('users'),
+  games: getCollectionFn('games')
 };
