@@ -180,6 +180,10 @@ io.on('connection', socket => {
     socket.broadcast.emit('chat', [msg[1], msg[0]]);
   })
 
+  socket.on('send-shit-to-other-player', playerN => {
+    socket.broadcast.emit('sent-shit-to-other-player', playerN);
+  })
+
   setTimeout(() => {
     connections[playerIndex] = null;
     socket.emit('timeout');

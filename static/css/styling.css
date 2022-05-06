@@ -10,6 +10,10 @@ body {
     width: 100%;
 }
 
+#opponentDisp {
+    margin: auto
+}
+
 #chat, #board, #players {
     display: inline-block;
     float: left;
