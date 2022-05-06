@@ -129,12 +129,23 @@ router.post('/user', async (req, res) => {
 });
 
 router.get('/game', async (req, res) => {
-    res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.min.js'] });
-});
-
-router.get('/leaderboard', async (req, res) => {
+    if (req.session.username) {
+        res.render('general/game', {    jsfiles: ['static/js/game.js', '/socket.io/socket.io.js'],
+                                        loggedIn: true });
+    }
+    else {
+        res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js'] });
+    }
+    });
+    
+    router.get('/leaderboard', async (req, res) => {
     // TODO: This needs to pull from the database function the leaderboard. - Marco
-    res.render('general/leaderboard');
+    if (req.session.username) {
+        res.render('general/leaderboard', { loggedIn: true });
+    }
+    else {
+        res.render('general/leaderboard');
+    }
 });
 
 router.get('/results', async (req, res) => {
