@@ -300,6 +300,9 @@ These should all be done now
             initBoard();
             console.log(playerN);
             playerNames = playerN;
+            let opponentName = playerNames[(playerNum + 1)%2];
+            $('#opponentDisp').html(`Opponent: ${opponentName}`);
+            socket.emit('send-shit-to-other-player', playerN);
         })
 
         // another player connects
@@ -337,6 +340,13 @@ These should all be done now
             // if(allReady){
             //     initBoard();
             // }
+        })
+
+        // this shit is so fucking jank i'm sorry LMAO
+        socket.on('sent-shit-to-other-player', playerN => {
+            playerNames = playerN;
+            let opponentName = playerNames[(playerNum + 1)%2];
+            $('#opponentDisp').html(`Opponent: ${opponentName}`);
         })
 
         // on timeout
