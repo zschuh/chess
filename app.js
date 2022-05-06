@@ -32,7 +32,7 @@ app.use(
 // Logging middleware, leaving this in for now
 app.use(async (req, res, next) => {
     let authStr;
-    if(req.session.user){ authStr="(Authenticated User)" } else { authStr="(Non-Authenticated User)" }
+    if(req.session.username){ authStr="(Authenticated User)" } else { authStr="(Non-Authenticated User)" }
     console.log(`[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} ${authStr}`);
     next();
 });
