@@ -363,22 +363,10 @@ These should all be done now
         })
 
         socket.on('kill-game', () => {
-            alert("The other player has disconnected, returning you to the homepage.");
+            alert("The other player has disconnected, returning you to the homepage. The game will not be recorded.");
             socket.disconnect();
             window.location.href = '/';
         })
-
-        socket.on('move-made', info => {
-            console.log("made a move");
-            // this needs to check what player made the move and then perform the move
-            if(turn){
-                console.log("error, move received when not the opponent's turn");
-                return;
-            }
-
-            // make the move on the chessboard
-        })
-
     }
 
 })(window.jQuery);
