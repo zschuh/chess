@@ -14,10 +14,10 @@ body {
     margin: auto
 }
 
-#chat, #board, #players {
+#chat, #board, #players, #moveList {
     display: inline-block;
     float: left;
-    margin: 30px;
+    margin: 20px;
 }
 
 .width-setter {
@@ -72,7 +72,7 @@ span.green {
 }
 
 #chat {
-    width: 20%;
+    width: 15%;
     border: 2px solid black;
     background-color: white;
 }

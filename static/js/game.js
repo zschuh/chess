@@ -111,7 +111,7 @@ These should all be done now
         // gamestate.push(Chessboard.objToFen(newPos));
         //after this will have to pull most recent move from black from db
         //then make the move on the board
-
+        $('#moveList').text(`${game.pgn({ max_width: 5, newline_char: '\n' })}`);
         socket.emit('send-move', {from: source, to: target, promotion: 'q'});
         console.log('sent move to server');
     }
@@ -292,6 +292,7 @@ These should all be done now
             console.log("recevied move");
             game.move(fenc);
             board.position(game.fen());
+            $('#moveList').text(`${game.pgn({ max_width: 5, newline_char: '\n' })}`);
             turn = !turn;
             checkStatus(); // check the game state and log important stuff
         })
