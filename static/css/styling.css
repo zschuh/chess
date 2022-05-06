@@ -3,6 +3,19 @@ body {
     background-size: cover;
 }
 
+#gameContainer {
+    position: fixed;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+#chat, #board, #players {
+    display: inline-block;
+    float: left;
+    margin: 30px;
+}
+
 .width-setter {
     margin: auto;
     width: 70%;
