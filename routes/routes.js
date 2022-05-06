@@ -128,17 +128,21 @@ router.post('/user', async (req, res) => {
     }
 });
 
+// Set this to TRUE to ignore the login check the game page.
+const TESTING_OVERRIDE = false;
 router.get('/game', async (req, res) => {
-    if (req.session.username) {
+    if (req.session.username || TESTING_OVERRIDE) {
         res.render('general/game', {    jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.js'],
                                         loggedIn: true });
     }
     else {
-        res.render('general/game', { jsfiles: ['static/js/game.js', '/socket.io/socket.io.js', 'static/js/chessboard-1.0.0.js'] });
+        // person is trying to access the game but they're not logged in
+        // Redirect them to the user login page
+        res.redirect('/user');
     }
     });
     
-    router.get('/leaderboard', async (req, res) => {
+router.get('/leaderboard', async (req, res) => {
     // TODO: This needs to pull from the database function the leaderboard. - Marco
     if (req.session.username) {
         res.render('general/leaderboard', { loggedIn: true });
@@ -153,7 +157,12 @@ router.get('/results', async (req, res) => {
         res.render('general/results', { loggedIn: true });
     }
     else {
-        res.render('general/results');
+        // res.render('general/results');
+        if(TESTING_OVERRIDE) {
+            res.render('general/results', { loggedIn: true });
+        } else{
+            res.redirect('/user');
+        }
     }
 });
 

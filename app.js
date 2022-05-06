@@ -5,7 +5,7 @@ const configRoutes = require('./routes');
 const cookieParser = require('cookie-parser');
 const socketio = require('socket.io');
 
-let gameActive = false;
+let activeGame = false;
 
 // handlebars stuff
 const exphbs = require('express-handlebars');
