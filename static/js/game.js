@@ -183,6 +183,8 @@ These should all be done now
         // draw?
         else if (game.in_draw()) {
           status = 'Game over, drawn position'
+          alert("Draw!");
+          endGame("draw");
         }
       
         // game still on

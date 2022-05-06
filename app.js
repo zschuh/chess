@@ -123,7 +123,11 @@ io.on('connection', socket => {
   // so this is kind of scuffed, both clients will send a winner so the loser sends a null winner here
   socket.on('game-end', winner => {
     activeGame = false;
-    if(winner) {
+    if(winner === "draw"){
+      console.log('game ended in a draw');
+      // TODO: add move list to the database
+    }
+    else if(winner) {
       console.log(`winner is ${winner}`);
       // TODO: add the move list to the database 
     }
