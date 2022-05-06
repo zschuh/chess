@@ -10,23 +10,27 @@
 
     /*
     TODO:
-    - Make a function that sends a move to the server
+    - Make a function that sends a move to the server 
         -- this needs to check if it's your turn and that it passes all the chess moves
         -- also needs to check if you've won
-        -- add the move to the db list
+        -- add the move to the db list - this is done in app.js
     - Make a function that receives the move from the server
         -- check if the move was made on the correct turn (for double verification)
         -- put the move into the chessboard
         -- check if that move was a winning move 
-        -- adds the move to the db list
+        -- adds the move to the db list - done in app.js
     - Make a function that updates everything after winning
-        -- Stops the game from being played
-        -- Shows some sort of winner screen
-        -- Adds the data to the database
+        -- Stops the game from being played - sets both turns to false
+        -- Shows some sort of winner screen - done with an alert box
+        -- Adds the data to the database - done in app.js
     - Ends the game on a disconnect
         -- Mark the game as incomplete or delete it from the database
         -- Let the current player know that their opponent disconnected and
            that the game won't be recorded 
+
+---------------------------------------------------------------------------------
+
+These should all be done now
     */
     /**********************CHESS FUNCTIONS**********************/
     //initialization
@@ -141,8 +145,17 @@
         // also send this game.fen() to the other client
         turn = !turn; // flip your turn
         // console.log("sent move");
+        checkStatus();
     }
-    function updateStatus () {
+
+    function endGame(winner) {
+        console.log("endGame running...");
+        turn = false; // do this for both people
+        socket.emit('game-end', winner);
+        socket.disconnect();
+    }
+
+    function checkStatus () {
         var status = ''
       
         var moveColor = 'White'
@@ -153,6 +166,18 @@
         // checkmate?
         if (game.in_checkmate()) {
           status = 'Game over, ' + moveColor + ' is in checkmate.'
+          // set that someone won and alert both people
+          let winner = null;
+          // I change the turn already so this needs to be opposite
+          if(!turn){
+              alert("You win!");
+              winner = orientation;
+          } else {
+              alert("You lose!");
+            //   winner = orientation;
+          }
+          endGame(winner);
+          return;
         }
       
         // draw?
@@ -219,7 +244,7 @@
         // set the board variable 
         board = Chessboard('board', config);
 
-        updateStatus();
+        checkStatus();
     }
 
     $('#start-button').on('click', function (event) {
@@ -259,6 +284,7 @@
             game.move(fenc);
             board.position(game.fen());
             turn = !turn;
+            checkStatus(); // check the game state and log important stuff
         })
 
         socket.on('show-chessboard', () => {
@@ -334,6 +360,12 @@
         socket.on('chat', info => {
             // TODO: change this to be the player name
             $('#chat-box').append(`Player ${parseInt(info[0]) + 1}: ${info[1]}<br/>`);
+        })
+
+        socket.on('kill-game', () => {
+            alert("The other player has disconnected, returning you to the homepage.");
+            socket.disconnect();
+            window.location.href = '/';
         })
 
         socket.on('move-made', info => {

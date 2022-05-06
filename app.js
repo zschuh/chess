@@ -5,6 +5,8 @@ const configRoutes = require('./routes');
 const cookieParser = require('cookie-parser');
 const socketio = require('socket.io');
 
+let gameActive = false;
+
 // handlebars stuff
 const exphbs = require('express-handlebars');
 app.engine('handlebars', exphbs.engine({ defaultLayout: 'main' }));
@@ -88,6 +90,12 @@ io.on('connection', socket => {
 
   // disconnect
   socket.on('disconnect', () => {
+    if(activeGame){
+      // then kill the game
+      console.log("One player disconnected in the middle of an active game");
+      activeGame = false;
+      socket.broadcast.emit('kill-game');
+    }
     console.log(`Player ${playerIndex} disconnected`);
     connections[playerIndex] = null;
     // tell everyone who disconnected
@@ -103,12 +111,22 @@ io.on('connection', socket => {
 
   socket.on('both-connected', () => {
     socket.broadcast.emit('show-chessboard');
+    activeGame = true;
   })
 
   socket.on('send-move', fenc => {
-    // TODO: add the fencode to the database
+    // TODO: add the fencode/move to an array or something
     console.log("received move, forwarded");
     socket.broadcast.emit('receive-move', fenc);
+  })
+
+  // so this is kind of scuffed, both clients will send a winner so the loser sends a null winner here
+  socket.on('game-end', winner => {
+    activeGame = false;
+    if(winner) {
+      console.log(`winner is ${winner}`);
+      // TODO: add the move list to the database 
+    }
   })
 
   // check player connections
