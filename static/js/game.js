@@ -4,29 +4,33 @@
     let currentPlayer = 'user';
     let playerNum = 0;
     let orientation = 'white';
-    //let ready = false;
-    //let opponentReady = false;
-    //let isGameOver = false;
+    let boardCreated = false;
+    let turn = true; // This is true if it's the current player's turn
+    let socket = null;
 
     /*
     TODO:
-    - Make a function that sends a move to the server
+    - Make a function that sends a move to the server 
         -- this needs to check if it's your turn and that it passes all the chess moves
         -- also needs to check if you've won
-        -- add the move to the db list
+        -- add the move to the db list - this is done in app.js
     - Make a function that receives the move from the server
         -- check if the move was made on the correct turn (for double verification)
         -- put the move into the chessboard
         -- check if that move was a winning move 
-        -- adds the move to the db list
+        -- adds the move to the db list - done in app.js
     - Make a function that updates everything after winning
-        -- Stops the game from being played
-        -- Shows some sort of winner screen
-        -- Adds the data to the database
+        -- Stops the game from being played - sets both turns to false
+        -- Shows some sort of winner screen - done with an alert box
+        -- Adds the data to the database - done in app.js
     - Ends the game on a disconnect
         -- Mark the game as incomplete or delete it from the database
         -- Let the current player know that their opponent disconnected and
            that the game won't be recorded 
+
+---------------------------------------------------------------------------------
+
+These should all be done now
     */
     /**********************CHESS FUNCTIONS**********************/
     //initialization
@@ -58,6 +62,7 @@
     //moving blacks pieces at all and vice versa
     function onDragStart (source, piece, position, orientation) {
         // do not pick up pieces if the game is over
+        console.log("onDragStart");
         if (game.game_over()) return false;
     
         /*if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -65,20 +70,27 @@
             return false;
         }*/
 
+        if(!turn){
+            console.log("not your turn...");
+            return false;
+        } 
+
         //only pick up pieces for your side
         //playerNum 0 = white
         //playerNum 1 = black
-        if(playerNum == 0){
-            if(piece.search(/^b/) !== -1) return false;
-        } else if (playerNum == 1) {
-            if(piece.search(/^w/) !== -1) return false;
-        }
+        // TODO: UNCOMMENT THIS LATER THIS IS IMPORTANT
+        // if(playerNum == 0){
+        //     if(piece.search(/^b/) !== -1) return false;
+        // } else if (playerNum == 1) {
+        //     if(piece.search(/^w/) !== -1) return false;
+        // }
     }
 
     //validate the move, if it's legal push it to the database
     //this function will be edited a bit when
     //dbstuff finishes
     function onDrop (source, target, piece, newPos) {
+        console.log("onDrop");
         removeGreySquares();
         console.log('Source: ' + source);
         console.log('Target: ' + target);
@@ -92,15 +104,20 @@
         // illegal move
         if (move === null) return 'snapback';
         //legal, push to db these 2 lines are temporary until db stuff is done
-        curPos++;
-        gamestate.push(Chessboard.objToFen(newPos));
+        // DB testing stuff
+        // curPos++;
+        // gamestate.push(Chessboard.objToFen(newPos));
         //after this will have to pull most recent move from black from db
         //then make the move on the board
+
+        socket.emit('send-move', {from: source, to: target, promotion: 'q'});
+        console.log('sent move to server');
     }
 
     //next 2 functions are just for highlighting the legal moves
     function onMouseoverSquare (square, piece) {
         // get list of possible moves for this square
+        console.log(`onMouseoverSquare, turn: ${game.turn()}`);
         var moves = game.moves({
           square: square,
           verbose: true
@@ -123,9 +140,22 @@
     }
 
     function onSnapEnd () {
-        board.position(game.fen())
+        console.log("onSnapEnd");
+        board.position(game.fen());
+        // also send this game.fen() to the other client
+        turn = !turn; // flip your turn
+        // console.log("sent move");
+        checkStatus();
     }
-    function updateStatus () {
+
+    function endGame(winner) {
+        console.log("endGame running...");
+        turn = false; // do this for both people
+        socket.emit('game-end', winner);
+        socket.disconnect();
+    }
+
+    function checkStatus () {
         var status = ''
       
         var moveColor = 'White'
@@ -136,6 +166,18 @@
         // checkmate?
         if (game.in_checkmate()) {
           status = 'Game over, ' + moveColor + ' is in checkmate.'
+          // set that someone won and alert both people
+          let winner = null;
+          // I change the turn already so this needs to be opposite
+          if(!turn){
+              alert("You win!");
+              winner = orientation;
+          } else {
+              alert("You lose!");
+            //   winner = orientation;
+          }
+          endGame(winner);
+          return;
         }
       
         // draw?
@@ -182,6 +224,29 @@
     updateStatus(); */
     /***********************************************************/
 
+    function initBoard(){
+        // show the chessboard; should probably put this in another function
+        console.log("Creating the board...");
+        if(boardCreated){
+            console.log("Board already created. Stopping.");
+            return;
+        }
+        var config = {
+            draggable: true,
+            position: 'start',
+            orientation: orientation,
+            onDragStart: onDragStart,
+            onDrop: onDrop,
+            onMouseoutSquare: onMouseoutSquare,
+            onMouseoverSquare: onMouseoverSquare,
+            onSnapEnd: onSnapEnd
+        };
+        // set the board variable 
+        board = Chessboard('board', config);
+
+        checkStatus();
+    }
+
     $('#start-button').on('click', function (event) {
         event.preventDefault();
 
@@ -189,7 +254,7 @@
     });
 
     function startMultiplayer() {
-        const socket = io();
+        socket = io(); // it's complaining that io isn't defined unless it's here...
 
         // receive client's player number
         socket.on('player-number', num => {
@@ -201,7 +266,10 @@
                 playerNum = parseInt(num);
                 if (playerNum === 1) {
                     currentPlayer = "opponent";
-                    orientation = 'black';
+                    orientation = 'black'
+                    turn = false; // not their turn
+                    socket.emit('both-connected'); // trigger the board to show for the other player
+                    initBoard();
                 }
 
                 console.log(playerNum);
@@ -209,6 +277,19 @@
                 // get other player status
                 socket.emit('check-players');
             }
+        })
+
+        socket.on('receive-move', fenc => {
+            console.log("recevied move");
+            game.move(fenc);
+            board.position(game.fen());
+            turn = !turn;
+            checkStatus(); // check the game state and log important stuff
+        })
+
+        socket.on('show-chessboard', () => {
+            initBoard();
+            // then like start the game logic or something
         })
 
         // another player connects
@@ -242,23 +323,10 @@
                 }
                 */
             })
-            if(allReady){
-                // show the chessboard; should probably put this in another function
-                console.log("all ready");
-                var config = {
-                    draggable: true,
-                    position: 'start',
-                    orientation: orientation,
-                    onDragStart: onDragStart,
-                    onDrop: onDrop,
-                    onMouseoutSquare: onMouseoutSquare,
-                    onMouseoverSquare: onMouseoverSquare,
-                    onSnapEnd: onSnapEnd
-                };
-                var board = Chessboard('board', config);
-
-                updateStatus();
-            }
+            // This doesn't work, this only works to display the player that joined second
+            // if(allReady){
+            //     initBoard();
+            // }
         })
 
         // on timeout
@@ -294,17 +362,11 @@
             $('#chat-box').append(`Player ${parseInt(info[0]) + 1}: ${info[1]}<br/>`);
         })
 
-        socket.on('move-made', info => {
-            console.log("made a move");
-            // this needs to check what player made the move and then perform the move
-            if(turn){
-                console.log("error, move received when not the opponent's turn");
-                return;
-            }
-
-            // make the move on the chessboard
+        socket.on('kill-game', () => {
+            alert("The other player has disconnected, returning you to the homepage. The game will not be recorded.");
+            socket.disconnect();
+            window.location.href = '/';
         })
-
     }
 
 })(window.jQuery);
