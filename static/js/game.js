@@ -2,6 +2,7 @@
     const infoDisplay = $('#info');
 
     let currentPlayer = 'user';
+    let username = 'player'; // default, ill be overwritten
     let playerNum = 0;
     let orientation = 'white';
     let boardCreated = false;
@@ -183,6 +184,8 @@ These should all be done now
         // draw?
         else if (game.in_draw()) {
           status = 'Game over, drawn position'
+          alert("Draw!");
+          endGame("draw");
         }
       
         // game still on
@@ -249,7 +252,7 @@ These should all be done now
 
     $('#start-button').on('click', function (event) {
         event.preventDefault();
-
+        
         startMultiplayer();
     });
 
@@ -262,8 +265,11 @@ These should all be done now
                 infoDisplay.html("Sorry, the server is full");
             }
             else {
+                console.log(`userId: ${userId}`);
+                username = userId; // this needs to be passed back to the route to disconnect you if you're already in
                 $('#game').show().siblings('section').hide();
                 playerNum = parseInt(num);
+                socket.emit('username-and-playernum', {username: userId, playerNum: playerNum});
                 if (playerNum === 1) {
                     currentPlayer = "opponent";
                     orientation = 'black'
@@ -364,6 +370,12 @@ These should all be done now
 
         socket.on('kill-game', () => {
             alert("The other player has disconnected, returning you to the homepage. The game will not be recorded.");
+            socket.disconnect();
+            window.location.href = '/';
+        })
+
+        socket.on('kill-game-2user', () => {
+            alert("You can't play on the same account! Ending game.");
             socket.disconnect();
             window.location.href = '/';
         })
