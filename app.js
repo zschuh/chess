@@ -4,6 +4,7 @@ const session = require('express-session');
 const configRoutes = require('./routes');
 const cookieParser = require('cookie-parser');
 const socketio = require('socket.io');
+const gameData = require('./data/games');
 
 let activeGame = false;
 
@@ -61,7 +62,9 @@ const io = socketio(server);
 // search will be matched together, anyone joining after will not be let in
 // we do it this way for the sake of convenience for our project
 const connections = [null, null];
-const playerNames = [null, null];
+const playerNames = [null, null]; // player 0 is white, player 1 is black (i think...)
+
+let moveList = [];
 
 io.on('connection', socket => {
   // fill up connections, give players indexes for identification
@@ -95,6 +98,7 @@ io.on('connection', socket => {
       // then kill the game
       console.log("One player disconnected in the middle of an active game");
       activeGame = false;
+      moveList = []; // clear the moveList
       socket.broadcast.emit('kill-game');
     }
     console.log(`Player ${playerIndex} disconnected`);
@@ -145,21 +149,32 @@ io.on('connection', socket => {
 
   socket.on('send-move', fenc => {
     // TODO: add the fencode/move to an array or something
+    moveList.push(fenc);
     console.log("received move, forwarded");
     socket.broadcast.emit('receive-move', fenc);
   })
 
   // so this is kind of scuffed, both clients will send a winner so the loser sends a null winner here
   socket.on('game-end', winner => {
+    let playerNamesStableCopy = playerNames;
     activeGame = false;
     if(winner === "draw"){
       console.log('game ended in a draw');
       // TODO: add move list to the database
+      gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "draw", moveList);
     }
     else if(winner) {
       console.log(`winner is ${winner}`);
-      // TODO: add the move list to the database 
+      // TODO: add the move list to the database
+      if(winner === playerNamesStableCopy[0]){
+        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "white", moveList).then(console.log("Game added."))
+      } else {
+        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "black", moveList).then(console.log("Game added."))
+      }
     }
+
+    // Note: you don't need to wipe the playerNames here because on disconnect
+    // the client does that automatically
   })
 
   // check player connections
