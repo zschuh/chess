@@ -1,1 +1,4 @@
 CS 546 Chess JS Project
+
+To seed the database, run
+node dbSeed.js [true], where the optional argument drops the database before beginning to seed data.
