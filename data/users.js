@@ -98,6 +98,7 @@ async function updatePlayerWithGame(username, gameId){
     if(res.gamesPlayed.includes(gameId)) throw `Error: gameId ${gameId} already exists for player ${username}`;
     res.gamesPlayed.push(gameId);
 
+    const userCollection = await users();
     // add the user back to the database
     const updatedInfo = await userCollection.replaceOne({_id:res._id}, res);
     return gameId;

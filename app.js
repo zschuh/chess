@@ -64,7 +64,7 @@ const io = socketio(server);
 const connections = [null, null];
 const playerNames = [null, null]; // player 0 is white, player 1 is black (i think...)
 
-const moveList = [];
+let moveList = [];
 
 io.on('connection', socket => {
   // fill up connections, give players indexes for identification
@@ -156,19 +156,20 @@ io.on('connection', socket => {
 
   // so this is kind of scuffed, both clients will send a winner so the loser sends a null winner here
   socket.on('game-end', winner => {
+    let playerNamesStableCopy = playerNames;
     activeGame = false;
     if(winner === "draw"){
       console.log('game ended in a draw');
       // TODO: add move list to the database
-      gameData.createGame(playerNames[0], playerNames[1], "draw", moveList);
+      gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "draw", moveList);
     }
     else if(winner) {
       console.log(`winner is ${winner}`);
       // TODO: add the move list to the database
-      if(winner === playerNames[0]){
-        gameData.createGame(playerNames[0], playerNames[1], "white", moveList);
+      if(winner === playerNamesStableCopy[0]){
+        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "white", moveList).then(console.log("Game added."))
       } else {
-        gameData.createGame(playerNames[0], playerNames[1], "black", moveList);
+        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "black", moveList).then(console.log("Game added."))
       }
     }
 

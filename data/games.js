@@ -1,5 +1,5 @@
 const validation = require('./validation');
-const mongoCollections = requrei('./../config/mongoCollections');
+const mongoCollections = require('./../config/mongoCollections');
 const games = mongoCollections.games;
 const userData = require('../data/users');
 const { users } = require('../config/mongoCollections');
@@ -43,7 +43,7 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
         }
     };
 
-    const insertInfo = await gamesCollection.insertOne(user);
+    const insertInfo = await gamesCollection.insertOne(game);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) { throw 'Could not add the user to the database' }
     console.log(`inserted new game with id ${insertInfo.insertedId}`);
 
@@ -51,8 +51,8 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
     let gameId = insertInfo.insertedId; 
 
     try {
-        userData.updatePlayerWithGame(whiteUsername, gameId);
-        userData.updatePlayerWithGame(blackUsername, gameId);
+        await userData.updatePlayerWithGame(whiteUsername, gameId);
+        await userData.updatePlayerWithGame(blackUsername, gameId);
     } catch(e) {
         throw `Error updating player: ${e}`;
     }
