@@ -106,5 +106,6 @@ async function updatePlayerWithGame(username, gameId){
 module.exports = {
     createUser,
     checkUser,
-    getUser
+    getUser,
+    updatePlayerWithGame
 };

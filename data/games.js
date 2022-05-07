@@ -37,6 +37,7 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
         blackplayer: blackUsername,
         winner: winner,
         movelist: {
+            // I believe this counts as a subdocument
             white: whiteMoves,
             black: blackMoves
         }
@@ -72,4 +73,9 @@ async function getGame(gameId){
     if(!game) throw 'Could not get game';
 
     return game;
+}
+
+module.exports = {
+    createGame,
+    getGame
 }
