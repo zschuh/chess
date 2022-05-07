@@ -2,6 +2,7 @@ const validation = require('./validation');
 const mongoCollections = require('./../config/mongoCollections');
 const users = mongoCollections.users;
 const bcrypt = require('bcrypt');
+const { ObjectId } = require('mongodb');
 
 async function createUser(email, username, password) {
     // email input checking
@@ -81,6 +82,26 @@ async function getUser(username) {
     user._id = user._id.toString();
     return user;
 }   
+
+/**
+ * Updates the player in the user database with the ID of the played game.
+ * @param {string} username The user to update
+ * @param {mongoDB ID} gameId The id of the game in the games collection
+ * @returns The game ID that was added
+ */
+async function updatePlayerWithGame(username, gameId){
+    validation.checkUsername(username);
+    // need to check if the game id is a valid mongo game id
+    if(!ObjectId.isValid(gameId)) throw "Error with 'gameId' argument: gameId is not valid";
+
+    let res = await getUser(username);
+    if(res.gamesPlayed.includes(gameId)) throw `Error: gameId ${gameId} already exists for player ${username}`;
+    res.gamesPlayed.push(gameId);
+
+    // add the user back to the database
+    const updatedInfo = await userCollection.replaceOne({_id:res._id}, res);
+    return gameId;
+}
 
 module.exports = {
     createUser,
