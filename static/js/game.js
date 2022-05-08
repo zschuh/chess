@@ -335,7 +335,7 @@ These should all be done now
             // }
         })
 
-        socket.on('sent-to-other-player', playerN => {
+        socket.on('send-to-other-player', playerN => {
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
             $('#opponentDisp').html(`Opponent: ${opponentName}`);
