@@ -13,10 +13,10 @@ router.get('/logout', async (req, res) => {
 // '/' route == homepage
 router.get('/', async (req, res) => {
     if (req.session.username) {
-        res.render('general/frontPage', { loggedIn: true });
+        res.render('general/frontPage', { loggedIn: true }).status(200);
     }
     else {
-        res.render('general/frontPage');
+        res.render('general/frontPage').status(200);
     }
 });
 
@@ -24,10 +24,10 @@ router.get('/user', async (req, res) => {
     if (req.session.username) {
         res.render('general/user', {    jsfiles: ['static/js/userform.js', '/socket.io/socket.io.js'],
                                         loggedIn: true,
-                                        user: req.session.username });
+                                        user: req.session.username }).status(200);
     }
     else {
-        res.render('general/user', { jsfiles: ['static/js/userform.js', '/socket.io/socket.io.js'] });
+        res.render('general/user', { jsfiles: ['static/js/userform.js', '/socket.io/socket.io.js'] }).status(200);
     }
 });
 
@@ -39,7 +39,7 @@ router.get('/userdata', async (req, res) => {
     try {
         validation.checkUsername(username);
     } catch (e) {
-        res.json({ error: e });
+        res.json({ error: e }).status(500);
         return;
     }
 
@@ -47,11 +47,11 @@ router.get('/userdata', async (req, res) => {
     try {
         user = await users.getUser(username);
     } catch (e) {
-        res.json({ error: e });
+        res.json({ error: e }).status(500);
         return;
     }
     // respond with user data
-    res.json({ userData: user });
+    res.json({ userData: user }).status(200);
     
 });
 
@@ -70,7 +70,7 @@ router.post('/user', async (req, res) => {
             validation.checkPassword(password);
         } catch (e) {
             // respond to ajax with something to jquery an error message and don't hide the login
-            res.json({ error: e });
+            res.json({ error: e }).status(500);
             return;
         }
 
@@ -79,13 +79,13 @@ router.post('/user', async (req, res) => {
             checkedUser = await users.checkUser(username, password);
         } catch (e) {
             // respond with something to jquery an error message, don't hide login (user or password is incorrect)
-            res.json({ error: e });
+            res.json({ error: e }).status(500);
             return;
         }
         // if user logs in, set session & tell ajax call that user is logged in so it can populate the user page with data
         if (checkedUser.authenticated === true) {
             req.session.username = username;
-            res.json({ success: true });
+            res.json({ success: true }).status(200);
         }
     }
 
@@ -104,7 +104,7 @@ router.post('/user', async (req, res) => {
             validation.checkPassword(password);
         } catch (e) {
             // respond to ajax with something to jquery an error message and don't hide the login
-            res.json({ error: e });
+            res.json({ error: e }).status(500);
             return;
         }
 
@@ -113,13 +113,13 @@ router.post('/user', async (req, res) => {
             createdUser = await users.createUser(email, username, password);
         } catch (e) {
             // respond that user/email already used
-            res.json({ error: e });
+            res.json({ error: e }).status(500);
             return;
         }
         // if user was created, set session & tell ajax call that user is created so it can populate the user page with data
         if (createdUser.userInserted === true) {
             req.session.username = username;
-            res.json({ success: true });
+            res.json({ success: true }).status(200);
         }
         else {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -136,7 +136,7 @@ router.get('/game', async (req, res) => {
                                         loggedIn: true,
                                         passedVars: [
                                             {varName: 'userId', varValue: req.session.username }
-                                        ]});
+                                        ]}).status(200);
     }
     else {
         // person is trying to access the game but they're not logged in
@@ -151,7 +151,7 @@ router.get('/leaderboard', async (req, res) => {
         //This is gonna change with css -zac
         let leaderboardSize = 15;
         //Passing the first leaderboardSize elements to be added to the boards (sets loggedIn variable based on session validation)
-        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
+        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) }).status(200);
 });
 
 // Currently unused.
