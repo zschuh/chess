@@ -261,6 +261,8 @@ These should all be done now
                 console.log(`userId: ${userId}`);
                 username = userId; // this needs to be passed back to the route to disconnect you if you're already in
                 $('#game').show().siblings('section').hide();
+                $('#moveList').hide();
+                $('#chat').hide();
                 playerNum = parseInt(num);
                 socket.emit('username-and-playernum', {username: userId, playerNum: playerNum});
                 if (playerNum === 1) {
@@ -269,6 +271,8 @@ These should all be done now
                     turn = false; // not their turn
                     socket.emit('both-connected'); // trigger the board to show for the other player
                     initBoard();
+                    $('#moveList').show();
+                    $('#chat').show();
                 }
 
                 playerNames[playerNum] = username;
