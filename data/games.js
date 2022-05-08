@@ -28,6 +28,21 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
         }
     }
 
+    if(winner !== null){
+        // console.log(winner);
+        winner = winner.toLowerCase();
+        if(winner !== 'black' && winner !== 'white' && winner !== 'draw'){
+            throw 'Error with winner: winner field must be "black", "white", or "draw"';
+        }
+    } else {
+        throw 'Error with winner: winner must not be null';
+    }
+
+    if(!Array.isArray(moveList)){
+        throw 'Error with moveList: moveList must be an array';
+    }
+
+
     // Shouldn't be necessary, adding for validation redundancy
     validation.checkUsername(whiteUsername);
     validation.checkUsername(blackUsername);
@@ -52,6 +67,7 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
 
     try {
         //Passing winner as a bool
+        // a draw is counted as a loss for both players
         await userData.updatePlayerWithGame(whiteUsername, gameId, (winner === 'white'));
         await userData.updatePlayerWithGame(blackUsername, gameId, (winner === 'black'));
     } catch(e) {
