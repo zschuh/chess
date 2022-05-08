@@ -12,9 +12,14 @@ async function seed(){
     if(process.argv[2]){
         try{
             await db.collection('users').drop();
+        } catch (e) {
+            console.log("users collection does not exist yet or some other drop error; continuing;");
+        }
+
+        try {
             await db.collection('games').drop();
         } catch (e) {
-            console.log("collection does not exist yet or some other drop error; continuing;");
+            console.log("games collection does not exist yet or some other drop error; continuing;");
         }
     }
 
