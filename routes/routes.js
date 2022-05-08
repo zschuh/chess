@@ -39,7 +39,7 @@ router.get('/userdata', async (req, res) => {
     try {
         validation.checkUsername(username);
     } catch (e) {
-        res.status(500).json({ error: e });
+        res.json({ error: e });
         return;
     }
 
@@ -47,11 +47,11 @@ router.get('/userdata', async (req, res) => {
     try {
         user = await users.getUser(username);
     } catch (e) {
-        res.status(500).json({ error: e });
+        res.json({ error: e });
         return;
     }
     // respond with user data
-    res.status(200).json({ userData: user });
+    res.json({ userData: user });
     
 });
 
@@ -70,7 +70,7 @@ router.post('/user', async (req, res) => {
             validation.checkPassword(password);
         } catch (e) {
             // respond to ajax with something to jquery an error message and don't hide the login
-            res.status(500).json({ error: e });
+            res.json({ error: e });
             return;
         }
 
@@ -79,13 +79,13 @@ router.post('/user', async (req, res) => {
             checkedUser = await users.checkUser(username, password);
         } catch (e) {
             // respond with something to jquery an error message, don't hide login (user or password is incorrect)
-            res.status(500).json({ error: e });
+            res.json({ error: e });
             return;
         }
         // if user logs in, set session & tell ajax call that user is logged in so it can populate the user page with data
         if (checkedUser.authenticated === true) {
             req.session.username = username;
-            res.status(200).json({ success: true });
+            res.json({ success: true });
         }
     }
 
@@ -104,7 +104,7 @@ router.post('/user', async (req, res) => {
             validation.checkPassword(password);
         } catch (e) {
             // respond to ajax with something to jquery an error message and don't hide the login
-            res.status(500).json({ error: e });
+            res.json({ error: e });
             return;
         }
 
@@ -113,13 +113,13 @@ router.post('/user', async (req, res) => {
             createdUser = await users.createUser(email, username, password);
         } catch (e) {
             // respond that user/email already used
-            res.status(500).json({ error: e });
+            res.json({ error: e });
             return;
         }
         // if user was created, set session & tell ajax call that user is created so it can populate the user page with data
         if (createdUser.userInserted === true) {
             req.session.username = username;
-            res.status(200).json({ success: true });
+            res.json({ success: true });
         }
         else {
             res.status(500).json({ error: 'Internal Server Error' });
@@ -155,22 +155,7 @@ router.get('/leaderboard', async (req, res) => {
 });
 
 router.get('/credits', async (req, res) => {
-    res.status(500).render('general/credits');
+    res.status(200).render('general/credits');
 })
-
-// Currently unused.
-// router.get('/results', async (req, res) => {
-//     if (req.session.username) {
-//         res.render('general/results', { loggedIn: true });
-//     }
-//     else {
-//         // res.render('general/results');
-//         if(TESTING_OVERRIDE) {
-//             res.render('general/results', { loggedIn: true });
-//         } else{
-//             res.redirect('/user');
-//         }
-//     }
-// });
 
 module.exports = router;
