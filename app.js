@@ -202,7 +202,7 @@ io.on('connection', socket => {
   })
 
   socket.on('send-to-other-player', playerN => {
-    socket.broadcast.emit('sent-to-other-player', playerN);
+    socket.broadcast.emit('send-to-other-player', playerN);
   })
 
   setTimeout(() => {
