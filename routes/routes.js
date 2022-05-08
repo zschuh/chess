@@ -148,7 +148,7 @@ router.get('/leaderboard', async (req, res) => {
         //Sorted array of every user eligible for the boards
         let sortedBoard = await users.getRankings();
         //This is gonna change with css -zac
-        let leaderboardSize = 10;
+        let leaderboardSize = 15;
         //Passing the first leaderboardSize elements to be added to the boards (sets loggedIn variable based on session validation)
         res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
 });
