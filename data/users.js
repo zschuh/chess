@@ -34,7 +34,7 @@ async function createUser(email, username, password) {
         email: email,
         username: username,
         password: hash,
-        rating: 0,
+        rating: {wins: 0, losses: 0},
         gamesPlayed: [] // array of game ID's
     };
     const insertInfo = await userCollection.insertOne(user);
@@ -43,6 +43,28 @@ async function createUser(email, username, password) {
     // success
     return {userInserted: true};
 } 
+
+//Returns all users
+async function getRankings(){
+
+    const userCollection = await users();
+    let userList = [];
+
+    await userCollection.find().forEach(function(user){
+        if(user.gamesPlayed.length){
+            //Calculate player rating based on W/L ratio and games played
+            let score = user.rating.losses === 0 ? 100 + user.rating.wins : (100*user.rating.wins/user.gamesPlayed.length)+user.rating.wins;
+            let elem = { username: user.username, rating: score, gamesPlayed: user.gamesPlayed.length};
+            console.log(elem);
+            userList.push(elem);
+        }
+    });
+
+    userList.sort((a, b) => a.rating > b.rating ? 1 : (a.rating === b.rating) ? ((a.gamesPlayed > b.gamesPlayed) ? 1 : -1) : -1);
+
+    return userList;
+
+}
 
 // Use for logins
 async function checkUser(username, password) {
@@ -89,23 +111,35 @@ async function getUser(username) {
  * @param {mongoDB ID} gameId The id of the game in the games collection
  * @returns The game ID that was added
  */
-async function updatePlayerWithGame(username, gameId){
+async function updatePlayerWithGame(username, gameId, result){
     validation.checkUsername(username);
+    validation.checkResult(result);
     // need to check if the game id is a valid mongo game id
     if(!ObjectId.isValid(gameId)) throw "Error with 'gameId' argument: gameId is not valid";
+    gameId = gameId.toString();
+    username = username.toLowerCase(); // this should prevent potential problems.
 
     let res = await getUser(username);
     if(res.gamesPlayed.includes(gameId)) throw `Error: gameId ${gameId} already exists for player ${username}`;
     res.gamesPlayed.push(gameId);
+    res._id = ObjectId(res._id);
+
+    //Update user's W/L ratio
+    result ? res.rating.wins +=1 : res.rating.losses += 1;
 
     const userCollection = await users();
     // add the user back to the database
     const updatedInfo = await userCollection.replaceOne({_id:res._id}, res);
+    console.log("res----------------");
+    console.log(res);
+    console.log(updatedInfo);
+    console.log("Made it past users the first time");
     return gameId;
 }
 
 module.exports = {
     createUser,
+    getRankings,
     checkUser,
     getUser,
     updatePlayerWithGame
