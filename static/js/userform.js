@@ -1,4 +1,5 @@
 (function ($) {
+    let userSubmitted = false;
     function checkEmail(email) {
         if (!email) { throw 'Email must be given' }
         if (typeof email !== 'string') { throw 'Email must be of type string' }
@@ -117,16 +118,20 @@
                 })
             };
 
-            $.ajax(requestConfig).then(function (responseMessage) {
-                if (responseMessage.success) {
-                    // if signup was a success then hide login/signup forms and display user data
-                    displayUserData();
-                }
-                else if (responseMessage.error) {
-                    signupFormError.html(responseMessage.error);
-                    signupFormError.show();
-                }
-            });
+            if(!userSubmitted){
+                userSubmitted = true;
+                $.ajax(requestConfig).then(function (responseMessage) {
+                    if (responseMessage.success) {
+                        // if signup was a success then hide login/signup forms and display user data
+                        displayUserData();
+                    }
+                    else if (responseMessage.error) {
+                        signupFormError.html(responseMessage.error);
+                        signupFormError.show();
+                        userSubmitted = false;
+                    }
+                });
+            }
         }
     })
 
@@ -161,17 +166,20 @@
                     password: login_pass
                 })
             };
-
-            $.ajax(requestConfig).then(function (responseMessage) {
-                if (responseMessage.success) {
-                    // if login was a success then hide login/signup forms and display user data
-                    displayUserData();
-                }
-                else if (responseMessage.error) {
-                    loginFormError.html(responseMessage.error);
-                    loginFormError.show();
-                }
-            });
+            if(!userSubmitted){
+                userSubmitted = true;
+                $.ajax(requestConfig).then(function (responseMessage) {
+                    if (responseMessage.success) {
+                        // if login was a success then hide login/signup forms and display user data
+                        displayUserData();
+                    }
+                    else if (responseMessage.error) {
+                        loginFormError.html(responseMessage.error);
+                        loginFormError.show();
+                        userSubmitted = false;
+                    }
+                });
+            }
         }
     })
 })(window.jQuery);

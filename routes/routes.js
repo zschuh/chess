@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const users = require('../data/users');
 const validation = require('../data/validation');
+const xss = require('xss');
 
 // when logged in, button is rendered at the top of page - clicking it destroys the session and redirects to homepage
 router.get('/logout', async (req, res) => {
@@ -59,8 +60,8 @@ router.get('/userdata', async (req, res) => {
 router.post('/user', async (req, res) => {
     // meaning if only username and password were passed, so it's logging in using checkUser(username, password)
     if (Object.keys(req.body).length === 2) {
-        let username = req.body.username;
-        let password = req.body.password;
+        let username = xss(req.body.username);
+        let password = xss(req.body.password);
         let checkedUser;
 
         // validate user and pass
@@ -91,9 +92,9 @@ router.post('/user', async (req, res) => {
     // meaning email, user and pass were given, so it's trying to create an account using createUser(email, user, pass)
     if (Object.keys(req.body).length === 3) {
         //console.log(typeof req.body.email);
-        let email = req.body.email;
-        let username = req.body.username;
-        let password = req.body.password;
+        let email = xss(req.body.email);
+        let username = xss(req.body.username);
+        let password = xss(req.body.password);
         let createdUser;
 
         // validate email, user, and pass
