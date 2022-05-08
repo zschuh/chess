@@ -5,12 +5,13 @@ Group Members: Marco Arriaga, Xavier Aviles, Nick Christen-Adams, Zac Schuh
 To use our application, make sure you are in the directory for the application then install the external node modules using the 'npm install' command (you must have NodeJS installed on your machine).
 Afterwards, you can startup the server by using the command 'npm start'.
 
-If you want to run this application on a single machine, you can use start the application as-is, as it uses localhost:3000 as the address.
+If you want to run this application on a single machine, you can start the application as-is, as it uses localhost:3000 as the address.
 Once the server is running, go to your browser and go to http://localhost:3000/ to start using the application. If you want to play a game locally across
 2 instances, have 1 instance running on your normal browser and the other in a private browser in order to bypass the cookies and login separate accounts simultaneously.
 
 Our application also supports peer2peer connection between multiple machines. To do this, you must select an IP address to host the server.
-In app.js, you can change the server to listen on an IP rather than localhost, which will then allow other machines to connect to the server.
+In app.js, you can change the server to listen on an IP rather than localhost, which will then allow other machines on the same network 
+(unless you have port forwarded) to connect to the server.
 After the server is booted the URL to the site will have to be the host machine's IP, rather than localhost.
 
 
@@ -24,11 +25,11 @@ Where the optional argument drops the database before beginning to seed data.
 
 -----------------------Home Page-----------------------
 The top button will allow you to login to an already existing account or register with a new account.
-The bottom button will allow you search for a game with another user, but you must be logged in to complete this action.
+The bottom button will allow you to search for a game with another user, but you must be logged in to complete this action.
 
 
 -----------------------User Page-----------------------
-You can use the top form to signup for a new account with a valid email, a username over 3 alphabetic characters, and a password over 5 alphanumeric characters.
+You can use the top form to sign up for a new account with a valid email, a username over 3 alphabetic characters, and a password over 5 alphanumeric characters.
 You can use the bottom form to login to an already existing account in the database, with the same input constraints as the registration form.
 Once you have signed in (through registration or login), you will not need to sign in again unless the server is restarted or you choose to log out for the duration of the session.
 Cookie time is one hour.
@@ -44,9 +45,9 @@ When a player has won or the game has ended in a draw, an alert box will appear 
 
 
 -------------------Leaderboard Page-------------------
-This page can be accessed while signed in or out. The board lists the top 15 users sorted by score, only ranking those with at least 3 games played for higher accuracy.
-Score is determined through a dynamic algorithm favoring both win rate and games played. The users' names, scores, and W/L counts are listed.
+This page can be accessed while signed in or not. The board lists the top 15 users sorted by score, only ranking those with at least 3 games played for higher accuracy.
+Score is determined through a dynamic algorithm favoring both win rate and games played. The names, scores, and W/L counts of all users are listed.
 
 
 ------------------------Log Out------------------------
-Click the log out button in the nav bar to sign out of your account, redirecting you to the home page and ending your session.
+Click the logout button in the nav bar to sign out of your account, redirecting you to the home page and ending your session.
