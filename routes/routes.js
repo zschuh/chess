@@ -151,7 +151,7 @@ router.get('/leaderboard', async (req, res) => {
         //This is gonna change with css -zac
         let leaderboardSize = 15;
         //Passing the first leaderboardSize elements to be added to the boards (sets loggedIn variable based on session validation)
-        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) }).status(200);
+        res.status(200).render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
 });
 
 router.get('/credits', async (req, res) => {
