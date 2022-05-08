@@ -6,7 +6,8 @@ To use our application, make sure you are in the directory for the application t
 Afterwards, you can startup the server by using the command 'npm start'.
 
 If you want to run this application on a single machine, you can use start the application as-is, as it uses localhost:3000 as the address.
-Once the server is running, go to your browser and go to http://localhost:3000/ to start using the application. 
+Once the server is running, go to your browser and go to http://localhost:3000/ to start using the application. If you want to play a game locally across
+2 instances, have 1 instance running on your normal browser and the other in a private browser in order to bypass the cookies and login separate accounts simultaneously.
 
 Our application also supports peer2peer connection between multiple machines. To do this, you must select an IP address to host the server.
 In app.js, you can change the server to listen on an IP rather than localhost, which will then allow other machines to connect to the server.
