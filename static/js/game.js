@@ -292,6 +292,8 @@ These should all be done now
 
         socket.on('show-chessboard', playerN => {
             initBoard();
+            $('#moveList').show();
+            $('#chat').show();
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
             $('#opponentDisp').html(`Opponent: ${opponentName}`);
