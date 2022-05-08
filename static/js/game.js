@@ -350,6 +350,7 @@ These should all be done now
             event.preventDefault();
     
             var chatMessage = $('#chat-input').val().trim();
+            $('#chat-input').val('');
     
             if (chatMessage) {
                 // find way to empty input field if possible. .val() = '' not working
