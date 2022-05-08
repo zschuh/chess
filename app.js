@@ -100,11 +100,13 @@ io.on('connection', socket => {
       activeGame = false;
       moveList = []; // clear the moveList
       socket.broadcast.emit('kill-game');
+      // kill the playernames
+      playerNames[playerIndex] = null;
     }
     console.log(`Player ${playerIndex} disconnected`);
     connections[playerIndex] = null;
     // reset the username
-    playerNames[playerIndex] = null;
+    // playerNames[playerIndex] = null;
     // tell everyone who disconnected
     socket.broadcast.emit('player-connection', playerIndex);
   })
@@ -156,21 +158,26 @@ io.on('connection', socket => {
 
   // so this is kind of scuffed, both clients will send a winner so the loser sends a null winner here
   socket.on('game-end', winner => {
-    let playerNamesStableCopy = playerNames;
+    console.log('received a game-end command');
+    // let playerNamesStableCopy = playerNames;
     activeGame = false;
     if(winner === "draw"){
       console.log('game ended in a draw');
       // TODO: add move list to the database
-      gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "draw", moveList);
+      gameData.createGame(playerNames[0], playerNames[1], "draw", moveList);
+      // now i can kill the playernames
+      playerNames[playerIndex] = null;
     }
-    else if(winner) {
+    else if(winner !== null) {
       console.log(`winner is ${winner}`);
       // TODO: add the move list to the database
-      if(winner === playerNamesStableCopy[0]){
-        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "white", moveList).then(console.log("Game added."))
+      if(winner === playerNames[0]){
+        gameData.createGame(playerNames[0], playerNames[1], "white", moveList).then(console.log("Game added."))
       } else {
-        gameData.createGame(playerNamesStableCopy[0], playerNamesStableCopy[1], "black", moveList).then(console.log("Game added."))
+        gameData.createGame(playerNames[0], playerNames[1], "black", moveList).then(console.log("Game added."))
       }
+      // now i can kill the playernames
+      playerNames[playerIndex] = null;
     }
 
     // Note: you don't need to wipe the playerNames here because on disconnect
