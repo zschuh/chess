@@ -19,9 +19,9 @@ function checkPassword(password) {
     if (!password) { throw 'Password must be supplied' }
     if (typeof password !== 'string') { throw 'Password must be of type string' }
     if (password.length === 0) { throw 'Password must not be empty' }
+    if (password.length < 6 || password.length > 30) { throw 'Password must be between 6 and 30 characters long' }
     //Regex to disallow single or double quotes as well as spaces but allows special characters
     if (!/^[^\s"']*$/.test(password)) { throw 'Password can not contain any spaces' }
-    if (password.length < 6) { throw 'Password must be at least 6 characters long' }
 }
 
 function checkResult(result){
