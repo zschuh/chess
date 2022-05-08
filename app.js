@@ -26,8 +26,8 @@ app.use(
       name: 'AuthCookie',
       secret: "dooping my dino in the dunkin donuts parking lot",
       saveUninitialized: true,
-      resave: false,
-      cookie: {maxAge: 60000}
+      resave: false, 
+      cookie: {maxAge: 1200000} // 60000 was one minute, gonna change to 20 minutes
     })
   );
 
