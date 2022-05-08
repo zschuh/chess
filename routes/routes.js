@@ -153,18 +153,19 @@ router.get('/leaderboard', async (req, res) => {
         res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
 });
 
-router.get('/results', async (req, res) => {
-    if (req.session.username) {
-        res.render('general/results', { loggedIn: true });
-    }
-    else {
-        // res.render('general/results');
-        if(TESTING_OVERRIDE) {
-            res.render('general/results', { loggedIn: true });
-        } else{
-            res.redirect('/user');
-        }
-    }
-});
+// Currently unused.
+// router.get('/results', async (req, res) => {
+//     if (req.session.username) {
+//         res.render('general/results', { loggedIn: true });
+//     }
+//     else {
+//         // res.render('general/results');
+//         if(TESTING_OVERRIDE) {
+//             res.render('general/results', { loggedIn: true });
+//         } else{
+//             res.redirect('/user');
+//         }
+//     }
+// });
 
 module.exports = router;
