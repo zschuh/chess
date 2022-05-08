@@ -128,6 +128,7 @@
                     else if (responseMessage.error) {
                         signupFormError.html(responseMessage.error);
                         signupFormError.show();
+                        userSubmitted = false;
                     }
                 });
             }
@@ -175,6 +176,7 @@
                     else if (responseMessage.error) {
                         loginFormError.html(responseMessage.error);
                         loginFormError.show();
+                        userSubmitted = false;
                     }
                 });
             }
