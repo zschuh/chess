@@ -118,16 +118,19 @@
                 })
             };
 
-            $.ajax(requestConfig).then(function (responseMessage) {
-                if (responseMessage.success) {
-                    // if signup was a success then hide login/signup forms and display user data
-                    displayUserData();
-                }
-                else if (responseMessage.error) {
-                    signupFormError.html(responseMessage.error);
-                    signupFormError.show();
-                }
-            });
+            if(!userSubmitted){
+                userSubmitted = true;
+                $.ajax(requestConfig).then(function (responseMessage) {
+                    if (responseMessage.success) {
+                        // if signup was a success then hide login/signup forms and display user data
+                        displayUserData();
+                    }
+                    else if (responseMessage.error) {
+                        signupFormError.html(responseMessage.error);
+                        signupFormError.show();
+                    }
+                });
+            }
         }
     })
 
