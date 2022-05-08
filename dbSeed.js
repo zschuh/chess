@@ -12,6 +12,7 @@ async function seed(){
     if(process.argv[2]){
         try{
             await db.collection('users').drop();
+            await db.collection('games').drop();
         } catch (e) {
             console.log("collection does not exist yet or some other drop error; continuing;");
         }
@@ -79,7 +80,7 @@ async function seed(){
         return;
     }
 
-    console.log("I have given you my seed.");
+    // console.log("I have given you my seed."); sorry zac
     connection.closeConnection();
 }
 
