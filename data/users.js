@@ -51,7 +51,7 @@ async function getRankings(){
     let userList = [];
 
     await userCollection.find().forEach(function(user){
-        if(user.gamesPlayed.length){
+        if(user.gamesPlayed.length > 2){
             //Calculate player rating based on W/L ratio and games played
             let score = user.rating.losses === 0 ? 100 + user.rating.wins : (100*user.rating.wins/user.gamesPlayed.length)+user.rating.wins;
             let elem = { username: user.username, rating: score, gamesPlayed: user.gamesPlayed.length};
@@ -60,7 +60,7 @@ async function getRankings(){
         }
     });
 
-    userList.sort((a, b) => a.rating > b.rating ? 1 : (a.rating === b.rating) ? ((a.gamesPlayed > b.gamesPlayed) ? 1 : -1) : -1);
+    userList.sort((a, b) => a.rating < b.rating ? 1 : (a.rating === b.rating) ? ((a.gamesPlayed < b.gamesPlayed) ? 1 : -1) : -1);
 
     return userList;
 

@@ -21,7 +21,7 @@ function checkPassword(password) {
 }
 
 function checkResult(result){
-    if (arguments.length === 0 || result === null) { throw 'Result must be supplied' }
+    if (arguments.length === 0) { throw 'Result must be supplied' }
     if (typeof result !== 'boolean') { throw 'Result must be of type bool' }
 }
 

@@ -148,7 +148,9 @@ router.get('/game', async (req, res) => {
 router.get('/leaderboard', async (req, res) => {
     // TODO: This needs to pull from the database function the leaderboard. - Marco
         let sortedBoard = await users.getRankings();
-        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard });
+        //This is gonna change with css -zac
+        let leaderboardSize = 10;
+        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
 });
 
 router.get('/results', async (req, res) => {
