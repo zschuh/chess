@@ -145,3 +145,7 @@ span.blue {
     width: 25%;
     font-size: small;
 }
+
+.smaller {
+    max-width: 30%;
+}
