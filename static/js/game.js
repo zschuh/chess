@@ -64,7 +64,6 @@ These should all be done now
     //moving blacks pieces at all and vice versa
     function onDragStart (source, piece, position, orientation) {
         // do not pick up pieces if the game is over
-        console.log("onDragStart");
         if (game.game_over()) return false;
     
         /*if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
@@ -73,7 +72,6 @@ These should all be done now
         }*/
 
         if(!turn){
-            console.log("not your turn...");
             return false;
         } 
 
@@ -92,7 +90,6 @@ These should all be done now
     //this function will be edited a bit when
     //dbstuff finishes
     function onDrop (source, target, piece, newPos) {
-        console.log("onDrop");
         removeGreySquares();
         console.log('Source: ' + source);
         console.log('Target: ' + target);
@@ -113,13 +110,11 @@ These should all be done now
         //then make the move on the board
         $('#moveList').text(`${game.pgn({ max_width: 5, newline_char: '\n' })}`);
         socket.emit('send-move', {from: source, to: target, promotion: 'q'});
-        console.log('sent move to server');
     }
 
     //next 2 functions are just for highlighting the legal moves
     function onMouseoverSquare (square, piece) {
         // get list of possible moves for this square
-        console.log(`onMouseoverSquare, turn: ${game.turn()}`);
         var moves = game.moves({
           square: square,
           verbose: true
@@ -142,7 +137,6 @@ These should all be done now
     }
 
     function onSnapEnd () {
-        console.log("onSnapEnd");
         board.position(game.fen());
         // also send this game.fen() to the other client
         turn = !turn; // flip your turn
@@ -151,7 +145,6 @@ These should all be done now
     }
 
     function endGame(winner) {
-        console.log("endGame running...");
         turn = false; // do this for both people
         socket.emit('game-end', winner);
         socket.disconnect();
@@ -201,7 +194,6 @@ These should all be done now
         }
       
         // $status.html(status)
-        console.log(status); // I don't have an html element for the status
       }
 
     /*Going to need a function to get the most recent move
@@ -231,7 +223,6 @@ These should all be done now
 
     function initBoard(){
         // show the chessboard; should probably put this in another function
-        console.log("Creating the board...");
         if(boardCreated){
             console.log("Board already created. Stopping.");
             return;
@@ -282,15 +273,12 @@ These should all be done now
 
                 playerNames[playerNum] = username;
 
-                console.log(playerNum);
-
                 // get other player status
                 socket.emit('check-players');
             }
         })
 
         socket.on('receive-move', fenc => {
-            console.log("recevied move");
             game.move(fenc);
             board.position(game.fen());
             $('#moveList').text(`${game.pgn({ max_width: 5, newline_char: '\n' })}`);
@@ -300,7 +288,6 @@ These should all be done now
 
         socket.on('show-chessboard', playerN => {
             initBoard();
-            console.log(playerN);
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
             $('#opponentDisp').html(`Opponent: ${opponentName}`);

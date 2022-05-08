@@ -45,7 +45,6 @@ router.get('/userdata', async (req, res) => {
     // get user's data
     try {
         user = await users.getUser(username);
-        console.log(user);
     } catch (e) {
         res.json({ error: e });
         return;
@@ -146,10 +145,11 @@ router.get('/game', async (req, res) => {
     });
     
 router.get('/leaderboard', async (req, res) => {
-    // TODO: This needs to pull from the database function the leaderboard. - Marco
+        //Sorted array of every user eligible for the boards
         let sortedBoard = await users.getRankings();
         //This is gonna change with css -zac
         let leaderboardSize = 10;
+        //Passing the first leaderboardSize elements to be added to the boards (sets loggedIn variable based on session validation)
         res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard.slice(0, leaderboardSize) });
 });
 
