@@ -331,8 +331,7 @@ These should all be done now
             // }
         })
 
-        // this shit is so fucking jank i'm sorry LMAO
-        socket.on('sent-shit-to-other-player', playerN => {
+        socket.on('send-to-other-player', playerN => {
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
             $('#opponentDisp').html(`Opponent: ${opponentName}`);
