@@ -45,11 +45,11 @@ These should all be done now
 
     //functions for highlighting legal moves
     function removeGreySquares () {
-        $('#board1 .square-55d63').css('background', '')
+        $('#board .square-55d63').css('background', '')
       }
       
     function greySquare (square) {
-        var $square = $('#board1 .square-' + square)
+        var $square = $('#board .square-' + square)
       
         var background = whiteSquareGrey
         if ($square.hasClass('black-3c85d')) {
@@ -75,15 +75,6 @@ These should all be done now
             return false;
         } 
 
-        //only pick up pieces for your side
-        //playerNum 0 = white
-        //playerNum 1 = black
-        // TODO: UNCOMMENT THIS LATER THIS IS IMPORTANT
-        // if(playerNum == 0){
-        //     if(piece.search(/^b/) !== -1) return false;
-        // } else if (playerNum == 1) {
-        //     if(piece.search(/^w/) !== -1) return false;
-        // }
     }
 
     //validate the move, if it's legal push it to the database
