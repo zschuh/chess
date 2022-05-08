@@ -34,7 +34,7 @@ async function createUser(email, username, password) {
         email: email,
         username: username,
         password: hash,
-        rating: {wins: 0, losses: 0},
+        rating: {wins: 0, losses: 0}, //Every user starts out with no games played
         gamesPlayed: [] // array of game ID's
     };
     const insertInfo = await userCollection.insertOne(user);
@@ -50,16 +50,19 @@ async function getRankings(){
     const userCollection = await users();
     let userList = [];
 
+    //Essentially loops through each user
     await userCollection.find().forEach(function(user){
+        //Only adding to the rankings if they have at least 3 games played
         if(user.gamesPlayed.length > 2){
-            //Calculate player rating based on W/L ratio and games played
+            //Calculate player 'score' based on W/L ratio and games played
             let score = user.rating.losses === 0 ? (user.rating.wins === 0 ? 0 : 100 + user.rating.wins) : (100*user.rating.wins/user.gamesPlayed.length)+user.rating.wins;
+            //Each object in the array has name, score, and games played to be accessed on the board
             let elem = { username: user.username, rating: score, gamesPlayed: user.gamesPlayed.length};
-            console.log(elem);
             userList.push(elem);
         }
     });
 
+    //Sort the array with highest score first, in which a tie results in more gamesplayed taking precedence (does not matter if they have the same win rate)
     userList.sort((a, b) => a.rating < b.rating ? 1 : (a.rating === b.rating) ? ((a.gamesPlayed < b.gamesPlayed) ? 1 : -1) : -1);
 
     return userList;
@@ -113,6 +116,7 @@ async function getUser(username) {
  */
 async function updatePlayerWithGame(username, gameId, result){
     validation.checkUsername(username);
+    //Had to do this weirdly but just makes sure result is a bool
     validation.checkResult(result);
     // need to check if the game id is a valid mongo game id
     if(!ObjectId.isValid(gameId)) throw "Error with 'gameId' argument: gameId is not valid";
@@ -124,16 +128,12 @@ async function updatePlayerWithGame(username, gameId, result){
     res.gamesPlayed.push(gameId);
     res._id = ObjectId(res._id);
 
-    //Update user's W/L ratio
+    //Update user's W/L ratio based on the result
     result ? res.rating.wins +=1 : res.rating.losses += 1;
 
     const userCollection = await users();
     // add the user back to the database
     const updatedInfo = await userCollection.replaceOne({_id:res._id}, res);
-    console.log("res----------------");
-    console.log(res);
-    console.log(updatedInfo);
-    console.log("Made it past users the first time");
     return gameId;
 }
 

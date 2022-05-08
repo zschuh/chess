@@ -36,7 +36,9 @@
                 userInfoTitle.html(`${userInfo.username}'s Info!`);
                 userInfoList.append(`<li>Email: ${userInfo.email}</li>`);
                 userInfoList.append(`<li>Username: ${userInfo.username}</li>`);
+                //Uses the same alg to calculate the score (better since no db call)
                 userInfoList.append(`<li>Score: ${userInfo.rating.losses === 0 ? (userInfo.rating.wins === 0 ? 0 : 100 + userInfo.rating.wins) : (100*userInfo.rating.wins/userInfo.gamesPlayed.length)+userInfo.rating.wins}</li>`)
+                //Gets from the rating object
                 userInfoList.append(`<li>Wins: ${userInfo.rating.wins} | Losses: ${userInfo.rating.losses}`);
                 //| Score: ${userScore}</li>`);
                 userInfoList.append(`<li>Games Played: ${userInfo.gamesPlayed.length}</li>`);

@@ -198,12 +198,11 @@ io.on('connection', socket => {
     console.log(`Message sent from ${playerIndex} ${msg[1]}: `, msg[0]);
 
     // send message to the other player 
-    // this is very scuffed because I'm doing all of this in a hacky way lol
     socket.broadcast.emit('chat', [msg[1], msg[0]]);
   })
 
-  socket.on('send-shit-to-other-player', playerN => {
-    socket.broadcast.emit('sent-shit-to-other-player', playerN);
+  socket.on('send-to-other-player', playerN => {
+    socket.broadcast.emit('sent-to-other-player', playerN);
   })
 
   setTimeout(() => {
