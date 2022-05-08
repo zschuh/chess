@@ -1,4 +1,32 @@
 CS 546 Chess JS Project
+Group Members: Marco Arriaga, Xavier Aviles, Nick Christen-Adams, Zac Schuh
 
-To seed the database, run
-node dbSeed.js [true], where the optional argument drops the database before beginning to seed data.
+---------------------Database Seed---------------------
+To seed the database, run:
+node dbSeed.js [bool]
+Where the optional argument drops the database before beginning to seed data.
+
+-----------------------Home Page-----------------------
+The top button will allow you to login to an already existing account or register with a new account.
+The bottom button will allow you search for a game with another user, but you must be logged in to complete this action.
+
+-----------------------User Page-----------------------
+You can use the top form to signup for a new account with a valid email, a username over 3 alphabetic characters, and a password over 5 alphanumeric characters.
+You can use the bottom form to login to an already existing account in the database, with the same input constraints as the registration form.
+Once you have signed in (through registration or login), you will not need to sign in again unless the server is restarted or you choose to log out for the duration of the session.
+Cookie time is one hour.
+
+-----------------------Game Page-----------------------
+Search for a game with the search button upon entering the page. When searching, you will be placed into a waiting room.
+The waiting room contains a text box on the right with the move list, which will not update until the game is found and a move is made.
+In the center of the waiting room is a chat box, in which you can send text messages to the client that connects to your hosted server.
+On the left is an indicator detailing whether or not your opponent has connected. In the top corner, your opponent will be listed when they connect.
+Once connected a chess board will appear; chess is played as is with standard rules (castling, checkmate, stalemate, etc).
+When a player has won or the game has ended in a draw, an alert box will appear within the browser indicating the result of the match. Navigate to any page to leave.
+
+-------------------Leaderboard Page-------------------
+This page can be accessed while signed in or out. The board lists the top 15 users sorted by score, only ranking those with at least 3 games played for higher accuracy.
+Score is determined through a dynamic algorithm favoring both win rate and games played. The users' names, scores, and W/L counts are listed.
+
+------------------------Log Out------------------------
+Click the log out button in the nav bar to sign out of your account, redirecting you to the home page and ending your session.
