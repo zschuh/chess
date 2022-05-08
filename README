@@ -1,4 +1,8 @@
 CS 546 Chess JS Project
 
-To seed the database, run
-node dbSeed.js [true], where the optional argument drops the database before beginning to seed data.
+To seed the databases, run
+node dbSeed.js [true], where the optional argument drops the database before beginning to seed data. 
+
+To run the website, first do 'npm install' which will install all the necessary packages and dependencies. Then run 'npm start' and the program will host
+the server on localhost:3000. To test with multiple users, either use a private browsing tab or use another machine on the same 
+LAN by substituting localhost with the IP of the host machine.
