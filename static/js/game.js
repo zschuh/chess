@@ -172,13 +172,14 @@ These should all be done now
           let winner = null;
           // I change the turn already so this needs to be opposite
           if(!turn){
-              alert("You win!");
               winner = orientation;
+              endGame(winner);
+              alert("You win!");
           } else {
+              endGame(winner);
               alert("You lose!");
             //   winner = orientation;
           }
-          endGame(winner);
           return;
         }
       

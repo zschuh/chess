@@ -116,10 +116,13 @@ async function updatePlayerWithGame(username, gameId, result){
     validation.checkResult(result);
     // need to check if the game id is a valid mongo game id
     if(!ObjectId.isValid(gameId)) throw "Error with 'gameId' argument: gameId is not valid";
+    gameId = gameId.toString();
+    username = username.toLowerCase(); // this should prevent potential problems.
 
     let res = await getUser(username);
     if(res.gamesPlayed.includes(gameId)) throw `Error: gameId ${gameId} already exists for player ${username}`;
     res.gamesPlayed.push(gameId);
+    res._id = ObjectId(res._id);
 
     //Update user's W/L ratio
     result ? res.rating.wins +=1 : res.rating.losses += 1;
@@ -127,6 +130,9 @@ async function updatePlayerWithGame(username, gameId, result){
     const userCollection = await users();
     // add the user back to the database
     const updatedInfo = await userCollection.replaceOne({_id:res._id}, res);
+    console.log("res----------------");
+    console.log(res);
+    console.log(updatedInfo);
     console.log("Made it past users the first time");
     return gameId;
 }
