@@ -57,7 +57,7 @@ async function getRankings(){
             //Calculate player 'score' based on W/L ratio and games played
             let score = user.rating.losses === 0 ? (user.rating.wins === 0 ? 0 : 100 + user.rating.wins) : (100*user.rating.wins/user.gamesPlayed.length)+user.rating.wins;
             //Each object in the array has name, score, and games played to be accessed on the board
-            let elem = { username: user.username, rating: score, gamesPlayed: user.gamesPlayed.length};
+            let elem = { username: user.username, rating: score.toFixed(2), gamesPlayed: user.gamesPlayed.length};
             userList.push(elem);
         }
     });
