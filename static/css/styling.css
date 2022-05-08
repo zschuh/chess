@@ -1,6 +1,7 @@
 body {
     background-image: url(../images/chess_bckgrnd_smth.png);
     background-size: cover;
+    font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
 }
 
 #gameContainer {
@@ -18,6 +19,37 @@ body {
     display: inline-block;
     float: left;
     margin: 20px;
+}
+
+.btn-primary {
+    background-color: #eea39a;
+    border:1em;
+    border-color: white;
+}
+
+.front-page {
+    margin-left: auto;
+    margin-right: auto;
+    width:50em;
+    text-align: center;
+}
+
+.center-buttons {
+    text-align: center;
+    display:inline-block;
+}
+
+.leaderboardLi {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width:20em;
+    font-size:25px;
+    line-height:2.2em;
+}
+
+#leaderboard {
+    padding: 25px;
 }
 
 .width-setter {

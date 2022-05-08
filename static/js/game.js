@@ -331,7 +331,6 @@ These should all be done now
             // }
         })
 
-        // this shit is so fucking jank i'm sorry LMAO
         socket.on('sent-to-other-player', playerN => {
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
