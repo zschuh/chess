@@ -15,6 +15,7 @@ const { users } = require('../config/mongoCollections');
  * @returns The ID of the created game.
  */
 async function createGame(whiteUsername, blackUsername, winner, moveList){
+    console.log("Got to createGame");
     const gamesCollection = await games();
 
     let whiteMoves = [];
@@ -42,6 +43,7 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
             black: blackMoves
         }
     };
+    console.log("Made it past setting the game in games");
 
     const insertInfo = await gamesCollection.insertOne(game);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) { throw 'Could not add the user to the database' }
@@ -51,8 +53,10 @@ async function createGame(whiteUsername, blackUsername, winner, moveList){
     let gameId = insertInfo.insertedId; 
 
     try {
-        await userData.updatePlayerWithGame(whiteUsername, gameId);
-        await userData.updatePlayerWithGame(blackUsername, gameId);
+        console.log("Got to games.js");
+        await userData.updatePlayerWithGame(whiteUsername, gameId, (winner === 'white'));
+        await userData.updatePlayerWithGame(blackUsername, gameId, (winner === 'black'));
+        console.log("Finished games.js");
     } catch(e) {
         throw `Error updating player: ${e}`;
     }

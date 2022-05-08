@@ -147,12 +147,8 @@ router.get('/game', async (req, res) => {
     
 router.get('/leaderboard', async (req, res) => {
     // TODO: This needs to pull from the database function the leaderboard. - Marco
-    if (req.session.username) {
-        res.render('general/leaderboard', { loggedIn: true });
-    }
-    else {
-        res.render('general/leaderboard');
-    }
+        let sortedBoard = await users.getRankings();
+        res.render('general/leaderboard', { loggedIn: (req.session.username ? true : false), board: sortedBoard });
 });
 
 router.get('/results', async (req, res) => {

@@ -20,8 +20,14 @@ function checkPassword(password) {
     if (password.length < 6) { throw 'Password must be at least 6 characters long' }
 }
 
+function checkResult(result){
+    if (!result) { throw 'Result must be supplied' }
+    if (typeof result !== 'boolean') { throw 'Result must be of type bool' }
+}
+
 module.exports = {
     checkEmail,
     checkUsername,
-    checkPassword
+    checkPassword,
+    checkResult
 };
