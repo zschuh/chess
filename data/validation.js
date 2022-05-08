@@ -10,7 +10,7 @@ function checkUsername(username) {
     if (!username) { throw 'Username must be supplied' }
     if (typeof username !== 'string') { throw 'Username must be of type string' }
     if (username.length === 0) { throw 'Username must not be empty' }
-    if (username.length < 4 || username.length < 25) { throw 'Username must be between 4 and 25 characters long' }
+    if (username.length < 4 || username.length > 25) { throw 'Username must be between 4 and 25 characters long' }
     //Regex for alphanumeric
     if (!/^[a-zA-Z0-9]*$/.test(username)) { throw 'Username can only be made up of alphanumeric characters a-z and 0-9' }
 }
