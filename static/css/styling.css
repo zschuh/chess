@@ -25,6 +25,7 @@ body {
     background-color: #eea39a;
     border:1em;
     border-color: white;
+    color: black;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
@@ -59,6 +60,13 @@ body {
     width:20em;
     font-size:25px;
     line-height:2.2em;
+}
+
+#opponentDisp {
+    margin-left: 35px;
+    margin-top: 15px;
+    margin-right: auto;
+    width: 10em;
 }
 
 #leaderboard {
@@ -104,16 +112,15 @@ body {
     text-align: center;
 }
 
-.connected span,
-.ready span {
+.connected span {
     display: inline-block;
     width: 1rem;
     height: 1rem;
-    background: red;
+    background: #DC3220;
 }
 
-span.green {
-    background: green;
+span.blue {
+    background: #005AB5;
 }
 
 #chat {

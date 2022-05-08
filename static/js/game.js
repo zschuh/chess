@@ -335,7 +335,7 @@ These should all be done now
             // }
         })
 
-        socket.on('sent-to-other-player', playerN => {
+        socket.on('send-to-other-player', playerN => {
             playerNames = playerN;
             let opponentName = playerNames[(playerNum + 1)%2];
             $('#opponentDisp').html(`Opponent: ${opponentName}`);
@@ -346,10 +346,10 @@ These should all be done now
             infoDisplay.html = "You have reached the 10 minute time limit";
         })
 
-        // toggle the <span> element next to connected status between red and green
+        // toggle the <span> element next to connected status between red and blue
         function playerConnectedOrDisconnected(num) {
             let player = `.p${parseInt(num) + 1}`;
-            $(`${player} .connected span`).toggleClass('green');
+            $(`${player} .connected span`).toggleClass('blue');
         }
 
         // event listener for sending chats
