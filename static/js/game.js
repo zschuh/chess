@@ -10,30 +10,6 @@
     let socket = null;
     let playerNames = ['(unconnected)', '(unconnected)'];
 
-    /*
-    TODO:
-    - Make a function that sends a move to the server 
-        -- this needs to check if it's your turn and that it passes all the chess moves
-        -- also needs to check if you've won
-        -- add the move to the db list - this is done in app.js
-    - Make a function that receives the move from the server
-        -- check if the move was made on the correct turn (for double verification)
-        -- put the move into the chessboard
-        -- check if that move was a winning move 
-        -- adds the move to the db list - done in app.js
-    - Make a function that updates everything after winning
-        -- Stops the game from being played - sets both turns to false
-        -- Shows some sort of winner screen - done with an alert box
-        -- Adds the data to the database - done in app.js
-    - Ends the game on a disconnect
-        -- Mark the game as incomplete or delete it from the database
-        -- Let the current player know that their opponent disconnected and
-           that the game won't be recorded 
-
----------------------------------------------------------------------------------
-
-These should all be done now
-    */
     /**********************CHESS FUNCTIONS**********************/
     //initialization
     var board = null
@@ -193,23 +169,6 @@ These should all be done now
 
     /*End Event Functions*/
 
-    /* Config and set up for the board
-       This will have to be moved to wherever 
-       we check if both players are ready then
-       start the game.*/
-    /*var config = {
-        draggable: true,
-        position: 'start',
-        orientation: orientation,
-        onDragStart: onDragStart,
-        onDrop: onDrop,
-        onMouseoutSquare: onMouseoutSquare,
-        onMouseoverSquare: onMouseoverSquare,
-        onSnapEnd: onSnapEnd
-    };
-    var board = Chessboard('board', config);
-
-    updateStatus(); */
     /***********************************************************/
 
     function initBoard(){
@@ -297,17 +256,7 @@ These should all be done now
             playerConnectedOrDisconnected(num);
         })
 
-        // TODO: Implement a ready up system for the game if I want to, I can also just have it start immediately once both players have connected
-        // on opponent ready
-        // this part is not neccessary at this point in time - create game first
-        // socket.on('opponent-ready', num => {
-        //     opponentReady = true;
-        //     playerReady(num);
-        //     if (ready) playgame
-        // })
-
         // check player status
-        // Marco - afaik this is only done on connection
         socket.on('check-players', players => {
             let allReady = true;
             players.forEach((p, i) => {
@@ -315,12 +264,6 @@ These should all be done now
                     playerConnectedOrDisconnected(i) 
                 }
                 allReady &= p.connected;
-                /* Do something like this once the game is implemented
-                if (p.ready) {
-                    playerReady(i);
-                    if (i !== playerReady) opponentReady = true;
-                }
-                */
             })
             // This doesn't work, this only works to display the player that joined second
             // if(allReady){
@@ -365,7 +308,6 @@ These should all be done now
 
         // on receiving chat
         socket.on('chat', info => {
-            // TODO: change this to be the player name
             $('#chat-box').append(`${info[0]}: ${info[1]}<br/>`);
         })
 
